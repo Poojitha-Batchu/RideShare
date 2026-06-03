@@ -1,0 +1,62 @@
+<nav class="navbar">
+  <div class="logo-section">
+    <img src="assets/images/logo.png" alt="logo" class="logo" />
+    <div class="logo-text">
+      <h2>RideShare</h2>
+      <p>A Carpooling Platform</p>
+    </div>
+  </div>
+
+  <!-- If user logged in -->
+  <ng-container *ngIf="loggedInUser">
+    <ul class="nav-links">
+      <a routerLink="/dashboard" routerLinkActive="active-link"><li>Home</li></a>
+      <a routerLink="/rides/search-ride" routerLinkActive="active-link"><li>Find Rides</li></a>
+      <a routerLink="/rides/offer-ride" routerLinkActive="active-link"><li>Offer Ride</li></a>
+      <a routerLink="/bookings" routerLinkActive="active-link"><li>My Rides</li></a>
+      <a routerLink="/about" routerLinkActive="active-link"><li>About</li></a>
+    </ul>
+  </ng-container>
+
+  <div class="buttons">
+    <!-- If user NOT logged in -->
+    <ng-container *ngIf="!loggedInUser">
+      <a routerLink="/login"><button class="login-btn">
+          <span><i class="fa-regular fa-user"></i></span>Login
+        </button></a>
+      <a routerLink="/signup"><button class="signup-btn">
+          <span><i class="fa-solid fa-user-plus"></i></span>Sign Up
+        </button></a>
+    </ng-container>
+
+    <!-- If user logged in -->
+    <ng-container *ngIf="loggedInUser">
+      <button class="profile-btn" (click)="getProfile()">
+        <span><i class="fa-solid fa-user"></i></span>{{ loggedInUser.full_name }}
+      </button>
+
+      <button class="logout-btn" (click)="openLogoutPopup()">
+        <span><i class="fa-solid fa-right-from-bracket"></i></span>Logout
+      </button>
+    </ng-container>
+  </div>
+</nav>
+
+
+<!-- Logout Popup -->
+<div class="popup-overlay" *ngIf="showLogoutPopup">
+  <div class="popup-box">
+    <h3>
+      {{ loggedInUser.full_name }}, are you sure you want to logout?
+    </h3>
+
+    <div class="popup-buttons">
+      <button class="confirm-btn" (click)="confirmLogout()">
+        Logout
+      </button>
+      <button class="cancel-btn" (click)="closeLogoutPopup()">
+        Cancel
+      </button>
+    </div>
+  </div>
+</div>

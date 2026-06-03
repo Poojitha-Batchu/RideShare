@@ -1,0 +1,346 @@
+<div class="my-bookings-container">
+
+    <!-- NO BOOKINGS -->
+    <ng-container *ngIf="bookings.length === 0; else bookingsTemplate">
+        <app-no-rides message="No Bookings Available" subMessage="You have not booked any rides yet.">
+        </app-no-rides>
+    </ng-container>
+
+    <!-- BOOKINGS -->
+    <ng-template #bookingsTemplate>
+
+        <!-- DATE GROUP -->
+        <div class="date-group" *ngFor="let group of groupedBookings">
+
+            <!-- DATE HEADER -->
+            <div class="date-header" (click)="toggleDateDropdown(group)">
+                <div class="date-left">
+                    <i class="fa-solid fa-calendar-days"></i>
+                    <h2>{{ group.date | date:'dd MMMM yyyy' }}</h2>
+                </div>
+                <i class="fa-solid" [ngClass]="{'fa-chevron-down': !group.isOpen,'fa-chevron-up': group.isOpen}"></i>
+            </div>
+
+            <!-- BOOKINGS UNDER DATE -->
+            <div class="date-bookings" *ngIf="group.isOpen">
+
+                <!-- BOOKING CARD -->
+                <div class="booking-card" *ngFor="let booking of group.rides">
+
+                    <!-- Header -->
+                    <div class="booking-header">
+
+                        <div class="driver-section">
+                            <img *ngIf="booking.driver_image" [src]="booking.driver_image" class="driver-image"
+                                alt="driver" />
+
+                            <div class="driver-details">
+                                <h2>{{ booking.driver_name }}</h2>
+                                <div class="rating-row">
+
+                                    <div class="rating">
+                                        <i class="fa-solid fa-star"></i>
+                                        <span>{{ booking.driver_rating }}</span>
+                                    </div>
+
+                                    <div class="header-divider"></div>
+
+                                    <div class="role-badge">
+                                        Driver
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Price -->
+
+                        <div class="price-card">
+                            <h1> ₹{{ booking.price_per_seat }}</h1>
+                            <p>/ seat</p>
+                        </div>
+
+                    </div>
+
+                    <!-- Route + Booking Info -->
+                    <div class="booking-body">
+
+                        <!-- Route -->
+                        <div class="route-section">
+
+                            <div class="route-item">
+                                <div class="pickup"><i class="fa-solid fa-location-dot"></i></div>
+                                <div>
+                                    <span class="label pickup-text">Pickup</span>
+                                    <h2>{{ booking.pickup_location }}</h2>
+                                    <p> {{ booking.pickup_landmark }}</p>
+                                </div>
+                            </div>
+
+                            <div class="line"></div>
+
+                            <div class="route-item">
+                                <div class="drop"><i class="fa-solid fa-location-dot"></i></div>
+                                <div>
+                                    <span class="label drop-text">Drop</span>
+                                    <h2>{{ booking.drop_location }}</h2>
+                                    <p>{{ booking.drop_landmark }}</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Right Info -->
+                        <div class="booking-info">
+                            <div class="info-item">
+                                <div class="info-icon purple"><i class="fa-regular fa-calendar"></i></div>
+                                <div>
+                                    <p>Date</p>
+                                    <h3>{{ booking.pickup_date | date:'dd MMM yyyy' }}</h3>
+                                    <h3>{{ booking.pickup_date | date:'EEEE' }}</h3>
+                                </div>
+                            </div>
+
+                            <div class="info-item">
+                                <div class="info-icon blue"><i class="fa-regular fa-clock"></i></div>
+                                <div>
+                                    <p>Time</p>
+                                    <h3> {{ '1970-01-01T' + booking.pickup_time | date:'hh:mm a' }}</h3>
+                                </div>
+                            </div>
+
+                            <div class="info-item">
+                                <div class="info-icon orange"><i class="fa-regular fa-credit-card"></i></div>
+                                <div>
+                                    <p>Payment Method</p>
+                                    <h3>{{ booking.payment_method }}</h3>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Bottom Status -->
+                    <div class="bottom-section">
+                        <!-- Row 1: Seats Booked -->
+                        <div class="status-row">
+                            <div class="status-icon purple"><i class="fa-solid fa-chair"></i></div>
+                            <div class="status-content">
+                                <p>Seats Booked</p>
+                                <h2>{{ booking.seats_booked }} Seats</h2>
+                            </div>
+                        </div>
+
+                        <!-- Row 2: Booking Status -->
+                        <div class="status-row">
+                            <div class="status-icon green"><i class="fa-solid fa-check"></i></div>
+                            <div class="status-content">
+                                <p>Booking Status</p>
+                                <h2 [ngClass]="{
+                                    'confirmed': booking.booking_status === 'CONFIRMED',
+                                    'cancelled': booking.booking_status === 'CANCELLED'}">
+                                    {{ booking.booking_status }}
+                                </h2>
+                            </div>
+                        </div>
+
+                        <!-- Row 3: Payment Status -->
+                        <div class="status-row">
+                            <div class="status-icon orange"><i class="fa-solid fa-wallet"></i></div>
+                            <div class="status-content">
+                                <p>Payment Status</p>
+                                <ng-container *ngIf="booking.payment_status === 'PAID'; else notPaid">
+                                    <h2 class="paid">PAID ( ₹{{ booking.total_pay | number:'1.0-0' }} )</h2>
+                                </ng-container>
+                                <ng-template #notPaid>
+                                    <h2 [ngClass]="{
+                                        'paid': booking.payment_status === 'PAID',
+                                        'pending': booking.payment_status === 'PENDING'}">
+                                        {{ booking.payment_status }}
+                                    </h2>
+                                </ng-template>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- BUTTONS SECTION -->
+                    <div class="button-section">
+
+                        <!-- Cancel Button -->
+                        <button class="cancel-btn" *ngIf="booking.booking_status !== 'CANCELLED'
+                                        && booking.ride_status !== 'STARTED'
+                                        && booking.ride_status !== 'COMPLETED'
+                                        && booking.ride_status !== 'CANCELLED'" (click)="openCancelPopup(booking)">
+
+                            <i class="fa-solid fa-trash"></i>Cancel Booking
+
+                        </button>
+
+                        <!-- CHAT BUTTON -->
+                        <button class="chat-btn"
+                            (click)="openChat(booking.ride_id, booking.pickup_location, booking.drop_location, booking.booking_id)">
+                            <i class="fa-solid fa-comments"></i>
+                            Open Chat
+                        </button>
+
+                        <!-- REVIEW BUTTON -->
+                        <button class="review-btn" *ngIf="booking.ride_status === 'COMPLETED'  && booking.booking_status !== 'CANCELLED'"
+                            (click)="openReviewPopup(booking)">
+                            <i class="fa-solid fa-star"></i> Rate Driver
+                        </button>
+
+                        <!-- PAID BUTTON -->
+                        <button class="paid-btn" *ngIf="booking.payment_status !== 'PAID' && booking.ride_status === 'COMPLETED' && booking.booking_status !== 'CANCELLED'"
+                            (click)="openPaymentPopup(booking)">
+                            <i class="fa-solid fa-check"></i>
+                            Pay ( ₹{{ booking.total_pay | number:'1.0-0' }} )
+                        </button>
+                    </div>
+
+                    <!-- USER CANCELLED BOOKING -->
+                    <button class="ride-cancelled-btn ride-info" *ngIf="booking.booking_status === 'CANCELLED'">
+                        You cancelled this booking
+                    </button>
+
+                    <!-- RIDE CANCELLED MESSAGE -->
+                    <button class="ride-cancelled-btn ride-info" *ngIf="booking.ride_status === 'CANCELLED'">
+                        Rider has cancelled the ride
+                    </button>
+
+                    <!-- STARTED STATUS MESSAGE -->
+                    <button class="ride-started-btn ride-info" *ngIf="booking.ride_status === 'STARTED' && booking.booking_status !== 'CANCELLED'">
+                        Rider has started the ride
+                    </button>
+
+
+                    <!-- COMPLETED STATUS MESSAGE -->
+                    <button class="ride-completed-btn ride-info" *ngIf="booking.ride_status === 'COMPLETED' && booking.booking_status !== 'CANCELLED'">
+                        Rider has completed the ride
+                    </button>
+
+                </div>
+            </div>
+        </div>
+    </ng-template>
+</div>
+
+
+<!-- CHAT WINDOW -->
+<app-ride-chat *ngIf="showChat"
+    [rideId]="selectedRideId"
+    [pickupLocation]="pickupLocation"
+    [bookingId]="selectedBookingId"
+    [dropLocation]="dropLocation"
+    (close)="closeChat()">
+</app-ride-chat>
+
+
+<!-- CANCEL POPUP -->
+<div class="popup-overlay" *ngIf="showCancelPopup">
+
+    <div class="cancel-popup">
+        <div class="popup-header">
+            <div class="popup-icon">
+                <i class="fa-solid fa-triangle-exclamation"></i>
+            </div>
+            <h2>Cancel Booking</h2>
+            <p>Are you sure you want to cancel booking?</p>
+        </div>
+
+        <app-message [successMessage]="cancellationSuccessMessage" [errorMessage]="cancellationErrorMessage">
+        </app-message>
+
+        <!-- Show only if booked seats > 1 -->
+        <div class="seat-selection" *ngIf="selectedBooking?.seats_booked > 1">
+            <label>Number of seats to cancel</label>
+            <input type="number" min="1" [max]="selectedBooking?.seats_booked" [(ngModel)]="cancelSeats" />
+        </div>
+
+        <div class="popup-buttons">
+            <button class="keep-btn" (click)="closeCancelPopup()">
+                Keep Booking
+            </button>
+
+            <button class="confirm-cancel-btn" (click)="confirmCancelBooking()">
+                Confirm Cancel
+            </button>
+        </div>
+    </div>
+</div>
+
+
+<!-- REVIEW POPUP -->
+<div class="popup-overlay" *ngIf="showReviewPopup">
+    <div class="review-popup">
+        <div class="popup-header">
+            <div class="popup-icon review-icon"><i class="fa-solid fa-star"></i></div>
+            <h2>Rate Your Ride</h2>
+            <p>Please rate your ride experience</p>
+        </div>
+
+        <app-message [successMessage]="reviewSuccessMessage" [errorMessage]="reviewErrorMessage">
+        </app-message>
+
+        <!-- STARS -->
+        <div class="rating-stars">
+            <i *ngFor="let star of [1,2,3,4,5]" class="fa-star" 
+                [class.fa-solid]="selectedRating >= star"
+                [class.fa-regular]="selectedRating < star" 
+                [class.active-star]="selectedRating >= star"
+                [class.disabled-star]="alreadyRated" 
+                (click)="!alreadyRated && (selectedRating = star)">
+            </i>
+        </div>
+
+        <!-- ALREADY RATED MESSAGE -->
+        <div class="already-rated-message" *ngIf="alreadyRated">
+            <i class="fa-solid fa-circle-check"></i>
+            Already Rated
+        </div>
+
+        <!-- BUTTONS -->
+        <div class="popup-buttons">
+            <button class="keep-btn" (click)="closeReviewPopup()">
+                Cancel
+            </button>
+
+            <button class="submit-review-btn" [disabled]="alreadyRated" (click)="submitReview()">
+                Submit Review
+            </button>
+        </div>
+    </div>
+</div>
+
+
+<!-- PAYMENT CONFIRMATION POPUP -->
+<div class="popup-overlay" *ngIf="showPaymentPopup">
+    <div class="payment-popup">
+        <div class="popup-header">
+
+            <div class="popup-icon payment-icon">
+                <i class="fa-solid fa-wallet"></i>
+            </div>
+            <h2>Confirm Payment</h2>
+
+            <p>
+                Are you sure you want to pay
+                <strong>
+                    ₹{{ selectedPaymentBooking?.total_pay | number:'1.0-0' }}
+                </strong>
+                for this ride?
+            </p>
+        </div>
+
+        <app-message
+            [successMessage]="paymentSuccessMessage"
+            [errorMessage]="paymentErrorMessage">
+        </app-message>
+
+        <div class="popup-buttons">
+            <button class="keep-btn" (click)="closePaymentPopup()">
+                Cancel
+            </button>
+
+            <button class="confirm-payment-btn" (click)="confirmPayment()">
+                Pay Now
+            </button>
+        </div>
+    </div>
+</div>

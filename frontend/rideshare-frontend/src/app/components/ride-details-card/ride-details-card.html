@@ -1,0 +1,218 @@
+<div class="rides-container">
+
+    <!-- Ride Card -->
+    <div class="ride-card" *ngFor="let ride of rides">
+
+        <!-- ================= HEADER ================= -->
+
+        <div class="card-header">
+
+            <div class="driver-section">
+
+                <img *ngIf="ride.user_profile_image; else defaultUser" [src]="ride.user_profile_image" alt="driver"
+                    class="driver-image" />
+
+                <ng-template #defaultUser>
+                    <div class="default-user-icon">
+                        <i class="fa-solid fa-user"></i>
+                    </div>
+                </ng-template>
+
+                <div class="driver-details">
+                    <h3>{{ ride.user_name }}</h3>
+                    <div class="rating">
+                        <i class="fa-solid fa-star"></i>
+                        <span>{{ ride.average_rating }}</span>
+                        <span style="border-left: 2px solid #64748b; padding-left: 8px;">{{ride.total_offered_rides}} Rides</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- PRICE -->
+            <div class="price-section">
+                <span class="price">
+                    ₹{{ ride.price_per_seat | number:'1.0-0' }}
+                </span>
+                <p>/ seat</p>
+            </div>
+
+        </div>
+
+        <!-- ================= HERO SECTION ================= -->
+        <div class="hero-section">
+
+            <!-- Left -->
+            <div class="route-left">
+
+                <!-- Pickup -->
+                <div class="route-item">
+                    <div class="pickup">
+                        <i class="fa-solid fa-location-dot location-icon"></i>
+                    </div>
+
+                    <div>
+                        <span class="label pickup-text">Pick Up</span>
+                        <h5>{{ ride.pickup_location }}</h5>
+                        <p>{{ ride.pickup_landmark || 'N/A' }}</p>
+                    </div>
+                </div>
+
+                <div class="line"></div>
+
+                <!-- Drop -->
+                <div class="route-item">
+                    <div class="drop">
+                        <i class="fa-solid fa-location-dot location-icon"></i>
+                    </div>
+
+                    <div>
+                        <span class="label drop-text">Drop</span>
+                        <h5>{{ ride.drop_location }}</h5>
+                        <p>{{ ride.drop_landmark || 'N/A' }}</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Vehicle -->
+            <div class="vehicle-card">
+
+                <div class="vehicle-icon">
+                    <i class="fa-solid fa-car"></i>
+                </div>
+
+                <div class="vehicle-info">
+                    <p class="detail-label">Vehicle</p>
+                    <h4 class="vehicle-name">{{ ride.vehicle_name }}</h4>
+                    <p class="vehicle-number">{{ ride.vehicle_number }}</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- ================= DETAILS ================= -->
+        <div class="details-grid">
+
+            <!-- DATE -->
+            <div class="detail-item details-date">
+                <i class="fa-regular fa-calendar"></i>
+                <div>
+                    <p class="detail-label">Date</p>
+                    <p class="detail-value">{{ ride.pickup_date | date:'dd MMM yyyy' }}</p>
+                    <p class="detail-value">({{ ride.pickup_date | date:'EEEE' }})</p>
+                </div>
+            </div>
+
+            <!-- TIME -->
+            <div class="detail-item details-clock">
+                <i class="fa-regular fa-clock"></i>
+                <div>
+                    <p class="detail-label">Time</p>
+                    <p class="detail-value">{{ '1970-01-01T' + ride.pickup_time | date:'hh:mm a' }}</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- ================= EXTRA NOTES ================= -->
+        <div class="details-grid">
+
+            <!-- SEATS -->
+            <div class="detail-item details-seats">
+                <i class="fa-solid fa-user"></i>
+                <div>
+                    <p class="detail-label">Available Seats</p>
+                    <ng-container *ngIf="ride.available_seats > 0">
+                        {{ ride.available_seats }} Seats Left
+                    </ng-container>
+
+                    <ng-container *ngIf="ride.available_seats === 0">
+                        Filled
+                    </ng-container>
+                </div>
+            </div>
+
+            <div class="detail-item details-seats">
+                <i class="fa-regular fa-message"></i>
+                <div>
+                    <p class="detail-label">Extra Notes</p>
+                    <h4 class="detail-value">{{ ride.description || '-' }}</h4>
+                </div>
+            </div>
+        </div>
+
+        <!-- ================= BUTTON ================= -->
+        <!-- IF CURRENT USER IS THE RIDE OWNER -->
+        <button class="offered-btn" *ngIf="ride.user_id === currentUserId">
+            <i class="fa-solid fa-circle-check"></i>
+            You Offered This Ride
+        </button>
+
+        <button class="book-button" 
+            *ngIf="ride.user_id !== currentUserId"
+            [disabled]="ride.available_seats === 0"
+            [class.full-btn]="ride.available_seats === 0" 
+            (click)="openBookingPopup(ride)">
+
+            <ng-container *ngIf="ride.available_seats > 0">
+                <i class="fa-solid fa-car"></i>
+                Book Now
+            </ng-container>
+
+            <ng-container *ngIf="ride.available_seats === 0">
+                Ride Full
+            </ng-container>
+        </button>
+    </div>
+</div>
+
+
+<!-- Popup -->
+<div class="popup-overlay" *ngIf="showBookingPopup">
+
+    <div class="booking-popup">
+        <h2>Book Ride</h2>
+        <p>Available Seats: {{ selectedRide?.available_seats }}</p>
+
+        <app-message [successMessage]="successMessage" [errorMessage]="errorMessage">
+        </app-message>
+
+        <!-- PASSENGERS -->
+        <div class="input-group">
+            <label>No. of Passengers</label>
+            <input type="number" [(ngModel)]="seatsBooked" min="1" [max]="selectedRide?.available_seats" />
+        </div>
+
+        <!-- PAYMENT METHOD -->
+
+        <div class="input-group">
+            <label>Payment Method</label>
+
+            <select [(ngModel)]="paymentMethod">
+
+                <option value="">Select Payment Method</option>
+                <option value="UPI">UPI</option>
+                <option value="CARD">Card</option>
+                <option value="CASH">Cash</option>
+            </select>
+
+        </div>
+
+        <!-- TOTAL PRICE -->
+        <div class="total-price">
+            <p>Total Price</p>
+            <h3>₹{{(selectedRide?.price_per_seat || 0)* (seatsBooked || 0)}}</h3>
+        </div>
+
+        <!-- BUTTONS -->
+        <div class="popup-buttons">
+            <button class="cancel-popup-btn" (click)="closePopup()">
+                Cancel
+            </button>
+
+            <button class="confirm-popup-btn" (click)="confirmBooking()">
+                Confirm Booking
+            </button>
+
+        </div>
+
+    </div>
+
+</div>

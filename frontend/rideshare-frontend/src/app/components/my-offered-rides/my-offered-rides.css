@@ -1,0 +1,770 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    background: #f4f7fb;
+    font-family: Arial, sans-serif;
+}
+
+.my-offered-rides-container {
+    padding: 10px;
+    display: grid;
+    flex-wrap: wrap;
+}
+
+/* DATE GROUP */
+
+.date-group {
+    margin-bottom: 26px;
+}
+
+/* HEADER */
+
+.date-header {
+    height: 72px;
+    background: white;
+    border-radius: 18px;
+    padding: 0 24px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    cursor: pointer;
+    box-shadow: 0 4px 14px rgba(0, 0, 0, 0.05);
+    transition: 0.2s;
+}
+
+.date-header:hover {
+    transform: translateY(-1px);
+}
+
+/* LEFT */
+
+.date-left {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+}
+
+.date-left i {
+    font-size: 22px;
+    color: #2563eb;
+}
+
+.date-left h2 {
+    font-size: 20px;
+    font-weight: 700;
+    color: #0f172a;
+}
+
+/* RIDES */
+.date-rides {
+    margin-top: 18px;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+}
+
+.ride-card {
+    background: white;
+    border-radius: 28px;
+    padding: 20px;
+    box-shadow: 0 8px 30px rgba(0,0,0,0.08);
+    margin:10px;
+    height: fit-content;
+}
+
+/* TOP */
+.top-section {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 8px;
+}
+
+.top-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.icon-box {
+    width: 34px;
+    height: 34px;
+    border-radius: 18px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 20px;
+}
+
+.purple {
+    background: #f3e8ff;
+    color: #7c3aed;
+}
+
+.blue {
+    background: #e0f2fe;
+    color: #2563eb;
+}
+
+.top-item h3 {
+    font-size: 16px;
+    color: #111827;
+    margin-bottom: 6px;
+}
+
+.top-item p {
+    color: #6b7280;
+    font-size: 16px;
+}
+
+.divider {
+    width: 1px;
+    height: 60px;
+    background: #e5e7eb;
+}
+
+/* BASE STYLE */
+.status-badge {
+    padding: 12px 16px;
+    border-radius: 50px;
+    font-size: 15px;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    width: fit-content;
+}
+
+/* ICON */
+.status-badge .icon {
+    font-size: 14px;
+}
+
+/* ---------------- ACTIVE ---------------- */
+.status-badge.active {
+    background: #e8f7ec;
+    color: #16a34a;
+}
+
+.status-badge.active .icon {
+    color: #16a34a;
+}
+
+/* ---------------- CANCELLED ---------------- */
+.status-badge.cancelled {
+    background: #fee2e2;
+    color: #ef4444;
+}
+
+.status-badge.cancelled .icon {
+    color: #ef4444;
+}
+
+/* ---------------- COMPLETED ---------------- */
+.status-badge.completed {
+    background: #e0f2fe;
+    color: #2563eb;
+}
+
+.status-badge.completed .icon {
+    color: #2563eb;
+}
+
+.status-badge.started {
+    background: #fef3c7;
+    color: #d97706;
+}
+
+
+/* ROUTE */
+.route-section {
+    border-top: 1px solid #e5e7eb;
+    border-bottom: 1px solid #e5e7eb;
+    padding: 16px 0;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.route-left {
+    flex: 1;
+}
+
+.route-item {
+    display: flex;
+    gap: 22px;
+}
+
+.location-icon {
+    font-size: 20px;
+    text-align: center;
+}
+
+.pickup {
+    width: 36px;
+    height: 36px;
+    padding: 6px;
+    border-radius: 50%;
+    background-color: #e0f2fe;
+    color: #16a34a;
+}
+
+.drop {
+    width: 36px;
+    height: 36px;
+    padding: 6px;
+    border-radius: 50%;
+    background-color: #fee2e2;
+    color: #ef4444;
+}
+
+.label {
+    font-size: 16px;
+    font-weight: 600;
+}
+
+.pickup-text {
+    color: #16a34a;
+}
+
+.drop-text {
+    color: #ef4444;
+}
+
+.route-item h2 {
+    font-size: 18px;
+    margin: 8px 0;
+    color: #111827;
+}
+
+.route-item p {
+    color: #6b7280;
+    font-size: 14px;
+}
+
+.line {
+    width: 3px;
+    height: 20px;
+    border-left: 3px dashed #94a3b8;
+    margin-left: 14px;
+    margin-top: 10px;
+    margin-bottom: 10px;
+}
+
+/* PRICE */
+.price-card {
+    width: 100px;
+    height: 100px;
+    border-radius: 24px;
+    background: #edf8ef;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+.price-card h1 {
+    color: #16a34a;
+    font-size: 30px;
+}
+
+.price-card p {
+    font-size: 20px;
+    color: #6b7280;
+}
+
+/* EARNINGS */
+.earnings-section {
+    border-bottom: 1px solid #e5e7eb;
+    display: flex;
+    margin: 8px 0px;
+    padding-bottom: 10px;
+}
+
+.earnings-left {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 0px 16px;
+}
+
+.wallet-box {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    padding: 20px;
+    background: #edf8ef;
+    color: #16a34a;
+    font-size: 22px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.earnings-left p {
+    font-size: 16px;
+    color: #475569;
+    margin: 8px 0px;
+}
+
+.earnings-left h2 {
+    font-size: 20px;
+    color: #16a34a;
+}
+
+/* PASSENGERS */
+.passenger-card {
+    margin: 10px 0;
+    border: 1px solid #e5e7eb;
+    border-radius: 20px;
+    overflow: hidden;
+}
+
+.passenger-header {
+    padding: 14px 30px;
+    border-bottom: 1px solid #e5e7eb;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    cursor: pointer;
+}
+
+.header-left {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+}
+
+.header-left i {
+    color: #7c3aed;
+    font-size: 20px;
+}
+
+.header-left h3 {
+    font-size: 18px;
+}
+
+.toggle-icon i {
+    font-size: 18px;
+    color: #64748b;
+    transition: 0.3s;
+}
+
+.toggle-icon i:hover {
+    color: #2563eb;
+}
+
+.passenger-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 14px 20px;
+    border-bottom: 1px solid #f1f5f9;
+}
+
+.passenger-left {
+    display: flex;
+    align-items: center;
+    gap: 18px;
+}
+
+.avatar {
+    width: 34px;
+    height: 34px;
+    border-radius: 50%;
+    background: #f3e8ff;
+    color: #7c3aed;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 18px;
+}
+
+.passenger-left h4 {
+    font-size: 16px;
+    color: #111827;
+}
+
+/* PAYMENT */
+.payment-actions {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
+.payment-badge{
+    padding: 10px 14px;
+    border-radius: 10px;
+    font-size: 13px;
+    font-weight: 600;
+}
+
+.green {
+    background: #e8f7ec;
+    color: #16a34a;
+}
+
+.blue {
+    background: #e8f0ff;
+    color: #2563eb;
+}
+
+.orange {
+    background: #fff3e6;
+    color: #ea580c;
+}
+
+/* BUTTON CONTAINER */
+.button-section {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    
+}
+
+/* COMMON BUTTON STYLE */
+.button-section button {
+    gap: 8px;
+    padding: 10px 14px;
+    border-radius: 12px;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    border: none;
+}
+
+/* ---------------- EDIT ---------------- */
+.edit-btn {
+    background: #f59e0b;
+    color: white;
+}
+
+.edit-btn:hover {
+    background: #d97706;
+}
+
+/* ---------------- CANCEL ---------------- */
+.cancel-btn {
+    background: #ef4444;
+    color: white;
+}
+
+.cancel-btn:hover {
+    background: #dc2626;
+}
+
+/* ---------------- START ---------------- */
+.start-btn {
+    background: #22c55e;
+    color: white;
+}
+
+.start-btn:hover {
+    background: #16a34a;
+}
+
+/* ---------------- COMPLETE ---------------- */
+.complete-btn {
+    background: #2563eb;
+    color: white;
+}
+.complete-btn:hover {
+    background: #1e40af;
+}
+
+/* ICON SIZE ALIGNMENT */
+.button-section i {
+    font-size: 14px;
+}
+
+.avatar-img {
+    width: 34px;
+    height: 34px;
+    border-radius: 50%;
+    object-fit: cover;
+}
+
+.empty-passenger {
+    padding: 20px;
+    text-align: center;
+    color: #64748b;
+    font-size: 16px;
+}
+
+.ride-cancelled {
+    margin-top: 18px;
+    width: 100%;
+    height: 44px;
+    border-radius: 18px;
+    background: #fee2e2;
+    color: #dc2626;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 15px;
+    font-weight: 600;
+}
+
+/* OVERLAY BACKGROUND */
+.popup-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(15, 23, 42, 0.55);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 9999;
+}
+
+/* POPUP BOX */
+.cancel-popup {
+    width: 380px;
+    background: #ffffff;
+    border-radius: 24px;
+    padding: 28px;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+    animation: fadeIn 0.25s ease-in-out;
+}
+
+/* HEADER */
+.popup-header {
+    text-align: center;
+}
+
+.popup-icon {
+    width: 72px;
+    height: 72px;
+    margin: 0 auto 18px;
+    border-radius: 50%;
+    background: #fee2e2;
+    color: #ef4444;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 28px;
+}
+
+.popup-header h2 {
+    font-size: 22px;
+    font-weight: 700;
+    color: #111827;
+    margin-bottom: 10px;
+}
+
+.popup-header p {
+    font-size: 15px;
+    color: #64748b;
+    margin-bottom: 24px;
+}
+
+/* BUTTONS */
+.popup-buttons {
+    display: flex;
+    gap: 14px;
+}
+
+.keep-btn,
+.confirm-cancel-btn {
+    flex: 1;
+    height: 46px;
+    border: none;
+    border-radius: 14px;
+    font-size: 15px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+/* NO BUTTON */
+.keep-btn {
+    background: #f1f5f9;
+    color: #334155;
+}
+
+.keep-btn:hover {
+    background: #e2e8f0;
+}
+
+/* YES BUTTON */
+.confirm-cancel-btn {
+    background: #ef4444;
+    color: white;
+}
+
+.confirm-cancel-btn:hover {
+    background: #dc2626;
+}
+
+.start-popup {
+    width: 380px;
+    background: white;
+    border-radius: 24px;
+    padding: 28px;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+}
+
+/* HEADER */
+.popup-header {
+    text-align: center;
+}
+
+.popup-icon {
+    width: 72px;
+    height: 72px;
+    margin: 0 auto 18px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 28px;
+}
+
+/* START ICON STYLE */
+.start-icon {
+    background: #dcfce7;
+    color: #16a34a;
+}
+
+.popup-header h2 {
+    font-size: 22px;
+    font-weight: 700;
+    margin-bottom: 10px;
+}
+
+.popup-header p {
+    color: #64748b;
+    font-size: 15px;
+    margin-bottom: 24px;
+}
+
+/* BUTTONS */
+.popup-buttons {
+    display: flex;
+    gap: 14px;
+}
+
+.keep-btn,
+.confirm-start-btn {
+    flex: 1;
+    height: 46px;
+    border: none;
+    border-radius: 14px;
+    font-size: 15px;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+/* CANCEL BUTTON */
+.keep-btn {
+    background: #f1f5f9;
+    color: #334155;
+}
+
+/* START BUTTON */
+.confirm-start-btn {
+    background: #22c55e;
+    color: white;
+}
+
+.confirm-start-btn:hover {
+    background: #16a34a;
+}
+
+.complete-popup {
+    width: 380px;
+    background: white;
+    border-radius: 24px;
+    padding: 28px;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+}
+
+/* HEADER */
+.popup-header {
+    text-align: center;
+}
+
+.popup-icon {
+    width: 72px;
+    height: 72px;
+    margin: 0 auto 18px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 28px;
+}
+
+/* COMPLETE ICON STYLE */
+.complete-icon {
+    background: #dcfce7;
+    color: #16a34a;
+}
+
+.popup-header h2 {
+    font-size: 22px;
+    font-weight: 700;
+    margin-bottom: 10px;
+}
+
+.popup-header p {
+    color: #64748b;
+    font-size: 15px;
+    margin-bottom: 24px;
+}
+
+/* BUTTONS */
+.popup-buttons {
+    display: flex;
+    gap: 14px;
+}
+
+.keep-btn,
+.confirm-complete-btn {
+    flex: 1;
+    height: 46px;
+    border: none;
+    border-radius: 14px;
+    font-size: 15px;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+/* CANCEL BUTTON */
+.keep-btn {
+    background: #f1f5f9;
+    color: #334155;
+}
+
+/* COMPLETE BUTTON */
+.confirm-complete-btn {
+    background: #16a34a;
+    color: white;
+}
+
+.confirm-complete-btn:hover {
+    background: #15803d;
+}
+
+.chat-btn {
+    background: #2563eb;
+    color: white;
+    border: none;
+    border-radius: 12px;
+    padding: 10px 16px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: 600;
+}
+
+
+
+

@@ -1,0 +1,173 @@
+<app-navbar></app-navbar>
+
+<div class="profile-page" [class.edit-mode]="showEditForm">
+    <!-- Left Profile Section -->
+
+    <div class="profile-card">
+        <div class="profile-header">
+
+            <!-- PROFILE IMAGE -->
+            <div class="profile-image">
+                <img *ngIf="userData?.profile_image" [src]="userData.profile_image" alt="profile"
+                    (error)="onImageError($event)" />
+
+                <div class="default-user-icon" *ngIf="!userData?.profile_image">👤</div>
+            </div>
+
+            <!-- USER INFO -->
+            <div class="profile-info">
+                <h1>{{ userData?.full_name }}</h1>
+
+                <div class="profile-meta">
+
+                    <!-- RATING -->
+                    <div class="rating-section">
+                        <i class="fa-solid fa-star"></i>
+                        <span>{{ userData?.average_rating || 0 }}</span>
+                    </div>
+                    <div class="meta-divider"></div>
+
+                    <!-- TOTAL RIDES -->
+                    <div class="rides-section">
+                        {{ userData?.total_offered_rides || 0 }} Rides Offered
+                    </div>
+
+                    <div class="meta-divider"></div>
+
+                    <!-- TOTAL RIDES -->
+                    <div class="rides-section">
+                        {{ userData?.total_my_bookings || 0 }} Rides Booked
+                    </div>
+
+                </div>
+            </div>
+        </div>
+
+        <!-- TOTAL EARNED -->
+        <div class="total-earned-card">
+            <div class="earned-icon">
+                <i class="fa-solid fa-wallet"></i>
+            </div>
+
+            <div class="earned-info">
+                <p>Total Earned</p>
+                <h2>₹{{ userData?.total_earned || 0 }}</h2>
+            </div>
+        </div>
+
+        <app-message [successMessage]="successMessage" [errorMessage]="errorMessage">
+        </app-message>
+
+        <!-- Profile Details -->
+
+        <div class="profile-details">
+            <div class="detail">
+                <strong>Email</strong>
+
+                <p>{{ userData?.email }}</p>
+            </div>
+
+            <div class="detail">
+                <strong>Phone</strong>
+
+                <p>{{ userData?.phone }}</p>
+            </div>
+
+            <div class="detail">
+                <strong>Gender</strong>
+
+                <p>
+                    {{ userData?.gender || 'Not Added' }}
+                </p>
+            </div>
+
+            <div class="detail">
+                <strong>Date of Birth</strong>
+
+                <p>
+                    {{ userData?.date_of_birth ? (userData.date_of_birth | date:'dd-MM-yyyy') : 'Not Added' }}
+                </p>
+            </div>
+        </div>
+
+        <div class="joined-date">
+            <p><strong>Joined on:</strong> {{ userData?.created_at | date:'dd-MM-yyyy' }}</p>
+        </div>
+
+        <button (click)="openEditForm()">Update Profile</button>
+    </div>
+
+    <!-- Right Edit Form -->
+
+    <div class="edit-profile-card" *ngIf="showEditForm">
+        <h2>Edit Profile</h2>
+
+        <form [formGroup]="profileForm">
+            <!-- Profile Image -->
+
+            <div class="form-group">
+                <label>Profile Image</label>
+
+                <input type="file" (change)="onImageSelect($event)" />
+            </div>
+
+            <!-- Full Name -->
+
+            <div class="form-group">
+                <label>Full Name</label>
+
+                <input type="text" formControlName="full_name" />
+            </div>
+
+            <!-- Email -->
+
+            <div class="form-group">
+                <label>Email</label>
+
+                <input type="email" formControlName="email" />
+            </div>
+
+            <!-- Phone -->
+
+            <div class="form-group">
+                <label>Phone</label>
+
+                <input type="text" formControlName="phone" />
+            </div>
+
+            <!-- Gender -->
+
+            <div class="form-group">
+                <label>Gender</label>
+
+                <select formControlName="gender">
+                    <option value="">Select Gender</option>
+
+                    <option value="Male">Male</option>
+
+                    <option value="Female">Female</option>
+                </select>
+            </div>
+
+            <!-- DOB -->
+
+            <div class="form-group">
+                <label>Date of Birth</label>
+
+                <input type="date" formControlName="date_of_birth" [max]="today" />
+            </div>
+
+            <div class="button-group">
+
+                <button type="button" class="save-btn" (click)="saveProfile()">
+                    Save
+                </button>
+
+                <button type="button" class="cancel-btn" (click)="closeEditForm()">
+                    Cancel
+                </button>
+
+            </div>
+        </form>
+    </div>
+</div>

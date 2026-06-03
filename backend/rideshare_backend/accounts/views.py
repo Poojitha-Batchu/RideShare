@@ -1,0 +1,216 @@
+from urllib import request
+
+from rest_framework.decorators import api_view
+from rest_framework.response import Response
+from .serializers import UserSerializer
+from django.contrib.auth.hashers import check_password
+from rest_framework_simplejwt.tokens import RefreshToken
+from .models import User
+from .utils import send_signup_mail, send_password_changed_mail
+from rest_framework.permissions import AllowAny
+from rest_framework.decorators import permission_classes
+from rest_framework.permissions import IsAuthenticated
+from django.contrib.auth.hashers import make_password
+
+from django.db.models import Avg, Sum
+from bookings.models import Booking
+from ride_review.models import RideReview
+from rides.models import Ride
+
+import threading
+def send_mail_async(email, name):
+    threading.Thread(
+        target=send_signup_mail,
+        args=(email, name)
+    ).start()
+
+def send_password_changed_mail_async(email, name):
+    threading.Thread(
+        target=send_password_changed_mail,
+        args=(email, name)
+    ).start()
+
+
+# Endpoints for user signup
+@api_view(["POST"])
+@permission_classes([AllowAny])  # Allow unauthenticated access to this view
+def signup(request):
+
+    try:
+        serializer = UserSerializer(data=request.data)
+
+        if serializer.is_valid():
+            user_data = serializer.validated_data
+            serializer.save()
+
+            send_mail_async(user_data["email"], user_data["full_name"])
+
+            return Response(
+                {
+                    "success": True,
+                    "message": "Signed up successfully. A confirmation mail has been sent to the registered email ID.",
+                },
+                status=201,
+            )
+
+        return Response(
+            {
+                "success": False,
+                "message": "Signup failed. Please check the input fields.",
+                "errors": serializer.errors,
+            },
+            status=400,
+        )
+
+    except Exception as e:
+        return Response(
+            {
+                "success": False,
+                "message": "Something went wrong during signup.",
+                "error": str(e),
+            },
+            status=500,
+        )
+
+
+# Endpoints for user login
+@api_view(["POST"])
+@permission_classes([AllowAny])  # Allow unauthenticated access to this view
+def login(request):
+
+    email = request.data.get("email")
+    password = request.data.get("password")
+
+    try:
+        user = User.objects.get(email=email)
+        if check_password(password, user.password):
+            # Generate JWT tokens
+            refresh = RefreshToken.for_user(user)
+            return Response(
+                {
+                    "success": True,
+                    "message": "Login successful. Redirecting to the home page.",
+                    "access_token": str(refresh.access_token),
+                    "refresh_token": str(refresh),
+                    "user": {
+                        "id": user.id,
+                        "full_name": user.full_name,
+                        "email": user.email,
+                        "phone": user.phone,
+                    },
+                }
+            )
+        else:
+            return Response(
+                {"success": False, "message": "Invalid password"}, status=401
+            )
+    except User.DoesNotExist:
+        return Response({"success": False, "message": "User not found"}, status=404)
+
+
+# Endpoint for user logout
+@api_view(["POST"])
+@permission_classes(
+    [IsAuthenticated]
+)  # Only allow authenticated users to access this view
+def logout(request):
+    return Response({"message": "Logged out successfully"})
+
+
+# Endpoint to get user profile details
+@api_view(["GET"])
+@permission_classes(
+    [IsAuthenticated]
+)  # Only allow authenticated users to access this view
+def profile(request):
+    try:
+        user = request.user
+        serializer = UserSerializer(user)
+
+        total_rides = Ride.objects.filter(user=request.user, status='COMPLETED').count()
+
+        # Total bookings
+        total_bookings = Booking.objects.filter(passenger_id=request.user, booking_status = 'COMPLETED').count()
+
+        total_earned = Booking.objects.filter(
+            ride__user=request.user,
+            booking_status="CONFIRMED",
+            payment_status="PAID"
+        ).aggregate(total=Sum("total_price"))["total"] or 0
+
+        average_rating = RideReview.objects.filter(
+            driver=request.user
+        ).aggregate(avg=Avg("rating"))["avg"] or 0
+
+        serializer_data = serializer.data
+        serializer_data["total_offered_rides"] = total_rides
+        serializer_data["total_my_bookings"] = total_bookings
+        serializer_data["total_earned"] = total_earned
+        serializer_data["average_rating"] = round(average_rating, 2)
+
+        return Response(serializer_data, status=201)
+    except Exception as e:
+        return Response(
+            {"error": "Something went wrong", "details": str(e)},
+            status=500,
+        )
+
+# Update Profile
+@api_view(["PATCH"])
+@permission_classes([IsAuthenticated])
+def update_profile(request):
+
+    try:
+        user = request.user
+        serializer = UserSerializer(user, data=request.data, partial=True)
+
+        if serializer.is_valid():
+            serializer.save()
+
+            return Response(
+                {
+                    "success": True,
+                    "message": "Profile updated successfully",
+                    "data": serializer.data,
+                },
+                status=200,
+            )
+        return Response(
+            {
+                "success": False,
+                "message": "Failed to update profile. Please check the input fields.",
+                "errors": serializer.errors,
+            },
+            status=400,
+        )
+
+    except Exception as e:
+        return Response(
+            {
+                "success": False,
+                "message": "Failed to update profile. Please try again.",
+                "error": str(e),
+            },
+            status=500,
+        )
+
+
+@api_view(["POST"])
+@permission_classes([AllowAny])
+def forgot_password(request):
+
+    email = request.data.get("email")
+    password = request.data.get("password")
+    confirm_password = request.data.get("confirm_password")
+
+    try:
+        user = User.objects.get(email=email)
+        user.password = make_password(password)
+        user.save()
+
+        # Send mail
+        send_password_changed_mail_async(user.email, user.full_name)
+        return Response({"success": True, "message": "Password updated successfully"})
+
+    except User.DoesNotExist:
+        return Response({"success": False, "message": "User not found"}, status=404)

@@ -1,0 +1,35 @@
+<div class="chat-overlay">
+    <div class="chat-window">
+
+        <!-- HEADER -->
+        <div class="chat-header">
+            <h2>Ride Chat for {{ pickupLocation }} to {{ dropLocation }}</h2>
+            <button class="close-btn" (click)="closeChat()"><i class="fa-solid fa-xmark"></i></button>
+        </div>
+
+        <!-- MESSAGES -->
+        <div class="messages-container">
+            <div class="message" *ngFor="let message of messages" [ngClass]="{'my-message': message.sender === currentUserId}">
+                <div class="sender-name">{{ message.sender_name }}</div>
+                <div class="message-bubble">{{ message.message }}</div>
+                <div class="message-time">{{ message.sent_at | date:'shortTime' }}</div>
+            </div>
+        </div>
+
+        <!-- INPUT -->
+        <div class="chat-input-section" *ngIf="chatActive && hasAccess">
+            <input type="text" placeholder="Type a message..." [(ngModel)]="newMessage" (keyup.enter)="sendMessage()" />
+            <button (click)="sendMessage()">Send</button>
+        </div>
+
+        <!-- CHAT CLOSED -->
+        <div class="chat-closed" *ngIf="!chatActive && hasAccess">
+            Ride completed. Chat has been closed.
+        </div>
+
+        <!-- ACCESS DENIED -->
+        <div class="chat-closed" *ngIf="!hasAccess">
+            {{ accessDeniedMessage }}
+        </div>
+    </div>
+</div>

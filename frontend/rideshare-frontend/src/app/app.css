@@ -1,0 +1,15 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: "Segoe UI", sans-serif;
+}
+
+body {
+  background: #f8fbff;
+  color: #1e293b;
+}
+
+html {
+  scroll-behavior: smooth;
+}

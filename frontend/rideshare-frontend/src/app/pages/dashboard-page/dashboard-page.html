@@ -1,0 +1,19 @@
+<app-navbar></app-navbar>
+<!-- <p>Dashboard works!!</p> -->
+<!-- <pre>{{ rides | json }}</pre> -->
+
+ <!-- No Rides Message -->
+    <ng-container *ngIf="!hadRides else ridesTemplate">
+        <app-no-rides
+            message="No Rides Available"
+            subMessage="No rides have been offered yet."
+        ></app-no-rides>
+        <!-- <h2></h2>
+        <p>No rides have been offered yet.</p> -->
+    </ng-container>
+
+    <ng-template #ridesTemplate>
+        <app-ride-details-card 
+            [rides]="rides">
+        </app-ride-details-card>
+    </ng-template>

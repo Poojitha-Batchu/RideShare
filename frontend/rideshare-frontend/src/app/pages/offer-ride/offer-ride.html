@@ -1,0 +1,103 @@
+<app-navbar></app-navbar>
+
+<div class="offer-ride-page">
+    <div class="offer-ride-container">
+
+        <h2>Offer a Ride</h2>
+        <p class="subtitle">
+            Share your ride and help others travel together.
+        </p>
+
+        <app-message [successMessage]="successMessage" [errorMessage]="errorMessage">
+        </app-message>
+
+        <form [formGroup]="offerRideForm" (ngSubmit)="submitRide()">
+
+            <div class="row">
+                <div class="form-group">
+                    <label>Pickup Location</label>
+                    <input type="text" placeholder="Enter pickup location" formControlName="pickup_location" />
+                </div>
+
+                <div class="form-group">
+                    <label>Pickup Landmark</label>
+                    <input type="text" placeholder="Enter pickup landmark" formControlName="pickup_landmark" />
+                </div>
+
+                <div class="form-group">
+                    <label>Pickup Date</label>
+                    <input type="date" formControlName="pickup_date" [min]="minDate" />
+                </div>
+
+                <div class="form-group">
+                    <label>Vehicle Name</label>
+                    <input type="text" placeholder="Ex: Hyundai Creta" formControlName="vehicle_name" />
+                </div>
+
+                <div class="form-group">
+                    <label>Available Seats</label>
+                    <input type="number" placeholder="Enter seats" formControlName="available_seats" />
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="form-group">
+                    <label>Drop Location</label>
+                    <input type="text" placeholder="Enter drop location" formControlName="drop_location" />
+                </div>
+
+                <div class="form-group">
+                    <label>Drop Landmark</label>
+                    <input type="text" placeholder="Enter drop landmark" formControlName="drop_landmark" />
+                </div>
+
+                <div class="form-group">
+                    <label>Pickup Time</label>
+                    <input type="time" formControlName="pickup_time" />
+                </div>
+
+                <div>
+                    <div class="form-group">
+                        <label>Vehicle Number</label>
+                        <input type="text" placeholder="TS09AB1234" formControlName="vehicle_number" />
+                    </div>
+
+                    <div class="error"
+                        *ngIf="offerRideForm.get('vehicle_number')?.invalid && offerRideForm.get('vehicle_number')?.touched">
+                        <small *ngIf="offerRideForm.get('vehicle_number')?.errors?.['required']">
+                            Vehicle number is required
+                        </small>
+
+                        <small *ngIf="offerRideForm.get('vehicle_number')?.errors?.['pattern']">
+                            Format should be like TS09AB1234
+                        </small>
+                    </div>
+                </div>
+
+
+                <div class="form-group">
+                    <label>Price Per Seat</label>
+                    <input type="number" placeholder="Enter amount" formControlName="price_per_seat" />
+                </div>
+            </div>
+
+            <div class="row full-row">
+                <div class="form-group">
+                    <label>Ride Description  (Optional)</label>
+                    <textarea rows="4" placeholder="Add ride notes..." formControlName="description"></textarea>
+                </div>
+            </div>
+
+            <div class="button-group">
+                <button type="submit" class="submit-btn">
+                    {{ isEditMode ? 'Save Ride' : 'Offer Ride' }}
+                </button>
+
+                <button type="button" class="cancel-btn" (click)="cancelForm()">
+                    Cancel
+                </button>
+
+            </div>
+        </form>
+    </div>
+</div>

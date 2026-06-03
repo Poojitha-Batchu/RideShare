@@ -1,0 +1,316 @@
+<div class="my-offered-rides-container">
+
+    <!-- NO RIDES -->
+    <ng-container *ngIf="rides.length === 0; else offeredRidesTemplate">
+        <app-no-rides message="No Offered Rides" subMessage="You have not offered any rides yet.">
+        </app-no-rides>
+    </ng-container>
+
+    <!-- RIDES -->
+    <ng-template #offeredRidesTemplate>
+
+        <!-- DATE GROUP -->
+        <div class="date-group" *ngFor="let group of groupedRides">
+
+            <!-- DATE HEADER -->
+            <div class="date-header" (click)="toggleRideDate(group)">
+
+                <div class="date-left">
+                    <i class="fa-solid fa-calendar-days"></i>
+                    <h2>{{ group.date | date:'dd MMMM yyyy' }}</h2>
+                </div>
+
+                <i class="fa-solid" [ngClass]="{'fa-chevron-down': !group.isOpen,'fa-chevron-up': group.isOpen}"></i>
+            </div>
+
+            <!-- RIDES -->
+            <div class="date-rides" *ngIf="group.isOpen">
+
+                <!-- RIDE CARD -->
+                <div class="ride-card" *ngFor="let ride of group.rides">
+                    <!-- Top -->
+                    <div class="top-section">
+                        <div class="top-item">
+                            <div class="icon-box purple">
+                                <i class="fa-regular fa-calendar"></i>
+                            </div>
+
+                            <div>
+                                <h3>{{ ride.pickup_date | date: 'dd MMM yyyy' }}</h3>
+                                <p>{{ ride.pickup_date | date: 'EEEE' }}</p>
+                            </div>
+                        </div>
+
+                        <div class="divider"></div>
+
+                        <div class="top-item">
+                            <div class="icon-box blue">
+                                <i class="fa-regular fa-clock"></i>
+                            </div>
+
+                            <div>
+                                <h3>{{ '1970-01-01T' + ride.pickup_time | date: 'hh:mm a' }}</h3>
+                                <p>Pickup Time</p>
+                            </div>
+                        </div>
+
+                        <div class="status-badge" [ngClass]="ride.status?.toLowerCase()">
+                            <span class="icon">
+                                <i *ngIf="ride.status === 'ACTIVE'" class="fa-solid fa-circle"></i>
+                                <i *ngIf="ride.status === 'CANCELLED'" class="fa-solid fa-xmark"></i>
+                                <i *ngIf="ride.status === 'COMPLETED'" class="fa-solid fa-check"></i>
+                            </span>
+
+                            {{ ride.status }}
+                        </div>
+                    </div>
+
+                    <!-- Route -->
+                    <div class="route-section">
+                        <div class="route-left">
+                            <div class="route-item">
+                                <div class="pickup">
+                                    <i class="fa-solid fa-location-dot location-icon"></i>
+                                </div>
+
+                                <div>
+                                    <span class="label pickup-text">Pickup</span>
+                                    <h2>{{ ride.pickup_location }}</h2>
+                                    <p>{{ ride.pickup_landmark || '' }}</p>
+                                </div>
+                            </div>
+
+                            <div class="line"></div>
+
+                            <div class="route-item">
+                                <div class="drop">
+                                    <i class="fa-solid fa-location-dot location-icon"></i>
+                                </div>
+
+                                <div>
+                                    <span class="label drop-text">Drop</span>
+                                    <h2>{{ ride.drop_location }}</h2>
+                                    <p>{{ ride.drop_landmark || '' }}</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Price -->
+
+                        <div class="price-card">
+                            <h1>₹{{ ride.price_per_seat | number: '1.0-0' }}</h1>
+                            <p>/ seat</p>
+                        </div>
+                    </div>
+
+                    <!-- Earnings -->
+
+                    <div class="earnings-section">
+                        <div class="earnings-left">
+                            <div class="wallet-box">
+                                <i class="fa-solid fa-wallet"></i>
+                            </div>
+
+                            <div>
+                                <p>Total Money Earned</p>
+                                <h2>₹{{ ride.total_earned || 0 }}</h2>
+                            </div>
+                        </div>
+
+                        <div class="divider"></div>
+
+                        <div class="earnings-left">
+                            <div class="wallet-box">
+                                <i class="fa-solid fa-circle-check"></i>
+                            </div>
+
+                            <div>
+                                <p>Booked</p>
+                                <h2>{{ ride.booked_seats }} / {{ ride.total_seats }} Seats</h2>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Passenger Details -->
+
+                    <div class="passenger-card">
+                        <div class="passenger-header" (click)="togglePassengers(ride.ride_id)">
+                            <div class="header-left">
+                                <i class="fa-solid fa-users"></i>
+                                <h3>Passenger Details</h3>
+                            </div>
+
+                            <div class="toggle-icon">
+                                <i class="fa-solid"
+                                    [ngClass]="openedRideId === ride.ride_id ? 'fa-chevron-up' : 'fa-chevron-down'">
+                                </i>
+                            </div>
+                        </div>
+
+                        <!-- Passenger -->
+                        <div class="passenger-body" *ngIf="openedRideId === ride.ride_id">
+                            <div class="passenger-item" *ngFor="let passenger of ride.passengers">
+                                <div class="passenger-left">
+                                    <div class="avatar">
+                                        <img *ngIf="passenger.profile_image" [src]="passenger.profile_image"
+                                            class="avatar-img" />
+
+                                        <i class="fa-solid fa-user"></i>
+                                    </div>
+                                    <div class="passenger-info">
+                                        <h4>{{ passenger.passenger_name }}</h4>
+                                        <p>{{ passenger.seats_booked }} seats ( ₹{{ passenger.total_price | number:'1.0-0' }} )</p>
+                                    </div>
+                                </div>
+
+                                <!-- RIGHT SIDE -->
+                                <div class="payment-actions">
+
+                                    <!-- PAYMENT STATUS -->
+                                    <div class="payment-badge" [ngClass]="{
+                                            green: passenger.payment_method === 'UPI',
+                                            blue: passenger.payment_method === 'CARD',
+                                            orange: passenger.payment_method === 'CASH'
+                                        }">
+
+                                        {{ passenger.payment_status }} <br>
+                                        ({{ passenger.payment_method }})
+
+                                    </div>
+
+                                    <!-- PAID BUTTON
+                                    <button class="paid-btn" *ngIf="passenger.payment_status !== 'PAID'"
+                                        (click)="markAsPaid(passenger.booking_id)">
+
+                                        <i class="fa-solid fa-check"></i>
+
+                                        Paid
+
+                                    </button> -->
+                                </div>
+                            </div>
+
+                            <!-- Empty -->
+                            <div *ngIf="ride.passengers.length === 0" class="empty-passenger">
+                                No passengers booked yet
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Buttons -->
+
+                    <div class="button-section">
+
+                        <!-- EDIT + CANCEL ONLY IF ACTIVE -->
+                        <ng-container *ngIf="ride.status === 'ACTIVE'">
+                            <!-- EDIT -->
+                            <button class="edit-btn" (click)="editRide(ride)">
+                                <i class="fa-solid fa-pen"></i>
+                                Edit Ride
+                            </button>
+
+                            <!-- CANCEL -->
+                            <button class="cancel-btn"
+                                (click)="openCancelRidePopup(ride.ride_id)">
+                                <i class="fa-solid fa-trash"></i>
+                                Cancel Ride
+                            </button>
+
+                            <!-- START RIDE -->
+                            <button class="start-btn" *ngIf="canStartRide(ride)"
+                                (click)="openStartRidePopup(ride)">
+                                <i class="fa-solid fa-play"></i>
+                                Start Ride
+                            </button>
+                        </ng-container>
+
+                        <!-- COMPLETE BUTTON -->
+                        <button class="complete-btn" *ngIf="ride.status === 'STARTED'"
+                            (click)="openCompleteRidePopup(ride)">
+                            <i class="fa-solid fa-flag-checkered"></i>
+                            Complete Ride
+                        </button>
+
+                        <!-- CHAT BUTTON -->
+                        <button class="chat-btn"
+                            (click)="openChat(ride.ride_id, ride.pickup_location, ride.drop_location)">
+                            <i class="fa-solid fa-comments"></i>
+                            Open Chat
+
+                        </button>
+                    </div>
+
+                    <div class="ride-cancelled" *ngIf="ride.status === 'CANCELLED'">You Cancelled this Ride</div>
+                </div>
+            </div>
+        </div>
+    </ng-template>
+</div>
+
+
+<!-- CANCEL POPUP -->
+<div class="popup-overlay" *ngIf="showCancelPopup">
+    <div class="cancel-popup">
+        <div class="popup-header">
+            <div class="popup-icon">
+                <i class="fa-solid fa-triangle-exclamation"></i>
+            </div>
+            <h2>Cancel Ride</h2>
+            <p>Are you sure you want to cancel this ride?</p>
+        </div>
+
+        <app-message [successMessage]="cancelSuccessMessage" [errorMessage]="cancelErrorMessage">
+        </app-message>
+
+        <!-- ACTION BUTTONS -->
+        <div class="popup-buttons">
+            <button class="keep-btn" (click)="closeCancelPopup()">No</button>
+
+            <button class="confirm-cancel-btn" (click)="confirmCancelRide()">Yes</button>
+        </div>
+    </div>
+</div>
+
+<!-- START RIDE POPUP -->
+<div class="popup-overlay" *ngIf="showStartRidePopup">
+    <div class="start-popup">
+        <div class="popup-header">
+            <div class="popup-icon start-icon"><i class="fa-solid fa-play"></i></div>
+            <h2>Start Ride</h2>
+            <p>Are you sure you want to start this ride?</p>
+        </div>
+
+        <app-message [successMessage]="startRideSuccessMessage" [errorMessage]="startRideErrorMessage">
+        </app-message>
+
+        <div class="popup-buttons">
+            <button class="keep-btn" (click)="closeStartRidePopup()">Cancel</button>
+            <button class="confirm-start-btn" (click)="confirmStartRide()">Start</button>
+        </div>
+    </div>
+</div>
+
+
+<!-- COMPLETE RIDE POPUP -->
+<div class="popup-overlay" *ngIf="showCompleteRidePopup">
+    <div class="complete-popup">
+        <div class="popup-header">
+            <div class="popup-icon complete-icon"><i class="fa-solid fa-flag-checkered"></i></div>
+            <h2>Complete Ride</h2>
+            <p>Are you sure you want to mark this ride as completed?</p>
+        </div>
+
+        <app-message [successMessage]="completeRideSuccessMessage" [errorMessage]="completeRideErrorMessage">
+        </app-message>
+
+        <div class="popup-buttons">
+            <button class="keep-btn" (click)="closeCompleteRidePopup()">Cancel</button>
+            <button class="confirm-complete-btn" (click)="confirmCompleteRide()">Complete</button>
+        </div>
+    </div>
+</div>
+
+<!-- CHAT WINDOW -->
+<app-ride-chat *ngIf="showChat" [rideId]="selectedRide" [pickupLocation]="pickupLocation" [dropLocation]="dropLocation"
+    (close)="closeChat()">
+</app-ride-chat>

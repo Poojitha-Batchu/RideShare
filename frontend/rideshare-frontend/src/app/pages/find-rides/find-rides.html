@@ -1,0 +1,142 @@
+<app-navbar></app-navbar>
+
+<div class="find-rides-page">
+    <div class="find-rides-container">
+        <h2>Find Rides</h2>
+        <p class="subtitle">
+            Search available rides
+        </p>
+
+        <app-message [successMessage]="successMessage" [errorMessage]="errorMessage">
+        </app-message>
+
+        <form [formGroup]="searchRideForm" (ngSubmit)="searchRides()">
+
+            <!-- Row 1 -->
+
+            <div class="row">
+                <div class="form-group dropdown-group">
+                    <label>Pickup Location<span style="color: red; padding-left: 4px;">*</span></label>
+                    <input type="text" placeholder="Enter pickup" formControlName="pickup_location"
+                        (input)="filterPickup()" (focus)="onPickupFocus()" />
+
+                    <div class="dropdown" *ngIf="focusedField === 'pickup_location' && filteredPickupLocations.length">
+                        <div class="dropdown-item" *ngFor="let item of filteredPickupLocations"
+                            (click)="selectPickup(item)">
+
+                            <span [innerHTML]="
+                                item.replace(
+                                    searchRideForm.value.pickup_location,
+                                    '<span class=' +
+                                    '\'highlight\'' +
+                                    '>' +
+                                    searchRideForm.value.pickup_location +
+                                    '</span>'
+                                )
+                            ">
+                            </span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-group dropdown-group">
+                    <label>Drop Location<span style="color: red; padding-left: 4px;">*</span></label>
+                    <input type="text" placeholder="Enter drop" formControlName="drop_location"
+                        (input)="filterDrop()" (focus)="onDropFocus()" />
+
+                    <div class="dropdown" *ngIf="focusedField === 'drop_location' && filteredDropLocations.length">
+                        <div class="dropdown-item" *ngFor="let item of filteredDropLocations"
+                            (click)="selectDrop(item)">
+                            <span [innerHTML]="
+                                item.replace(
+                                    searchRideForm.value.drop_location,
+                                    '<span class=' +
+                                    '\'highlight\'' +
+                                    '>' +
+                                    searchRideForm.value.drop_location +
+                                    '</span>'
+                                )
+                            ">
+                            </span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-group dropdown-group">
+                    <label>Pickup Date</label>
+                    <input type="date" formControlName="pickup_date" />
+                </div>
+
+                <div class="form-group dropdown-group">
+                    <label>Pickup Time</label>
+                    <input type="text" placeholder="Enter pickup time" formControlName="pickup_time"
+                        (input)="filterTime()" (focus)="onTimeFocus()"/>
+
+                    <div class="dropdown" *ngIf="focusedField === 'pickup_time' && filteredPickupTimes.length">
+                        <div class="dropdown-item" *ngFor="let item of filteredPickupTimes" (click)="selectTime(item)">
+                            <span [innerHTML]="
+                                        item.replace(
+                                            searchRideForm.value.pickup_time,
+                                            '<span class=' +
+                                            '\'highlight\'' +
+                                            '>' +
+                                            searchRideForm.value.pickup_time +
+                                            '</span>'
+                                        )
+                                    ">
+                            </span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-group dropdown-group">
+                    <label>Price Per Seat</label>
+                    <input type="text" placeholder="Enter price" formControlName="price_per_seat"
+                        (input)="filterPrice()" (focus)="onPriceFocus()"/>
+
+                    <div class="dropdown" *ngIf="focusedField === 'price_per_seat' && filteredPrices.length">
+                        <div class="dropdown-item" *ngFor="let item of filteredPrices" (click)="selectPrice(item)">
+
+                            <span [innerHTML]="
+                                        item.replace(
+                                            searchRideForm.value.price_per_seat,
+                                            '<span class=' +
+                                            '\'highlight\'' +
+                                            '>' +
+                                            searchRideForm.value.price_per_seat +
+                                            '</span>'
+                                        )
+                                    ">
+                            </span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            
+            <div class="buttons-container">
+                <button type="submit" class="search-btn">
+                    Search Rides
+                </button>
+                <button type="button" class="clear-btn" (click)="clearSearch()">
+                    Clear
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- Search Results -->
+
+<div class="search-results">
+
+    <h3 *ngIf="rides.length > 0">
+        Available Rides
+    </h3>
+
+    <!-- Ride Cards -->
+
+    <app-ride-details-card [rides]="rides">
+    </app-ride-details-card>
+
+</div>

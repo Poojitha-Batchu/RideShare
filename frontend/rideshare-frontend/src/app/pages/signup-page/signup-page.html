@@ -1,0 +1,136 @@
+<div class="signup-page">
+    <div class="left-section">
+        <img src="assets/images/logo.png" alt="RideShare" />
+
+        <h1>RideShare</h1>
+
+        <h2>A Carpooling Platform</h2>
+
+        <p>Share rides, save money and travel together safely.</p>
+    </div>
+
+    <div class="right-section">
+        <div class="signup-container">
+            <h2>Create Account</h2>
+
+            <p>Join RideShare today</p>
+
+            <app-message
+                [successMessage]="signupSuccessMessage"
+                [errorMessage]="signupErrorMessage">
+            </app-message>
+
+            <form [formGroup]="signupForm" (ngSubmit)="onSignup()">
+                <!-- Full Name -->
+
+                <div class="form-group">
+                    <label>Full Name</label>
+
+                    <input type="text" formControlName="full_name" placeholder="Full Name" />
+
+                    <div class="error"
+                        *ngIf="signupForm.get('full_name')?.invalid && signupForm.get('full_name')?.touched">
+                        <small *ngIf="signupForm.get('full_name')?.errors?.['required']">
+                            Full name is required
+                        </small>
+
+                        <small *ngIf="signupForm.get('full_name')?.errors?.['minlength']">
+                            Minimum 3 characters required
+                        </small>
+                    </div>
+                </div>
+
+                <!-- Email -->
+
+                <div class="form-group">
+                    <label>Email Address</label>
+
+                    <input type="email" placeholder="Email Address" formControlName="email" />
+
+                    <div class="error" *ngIf="signupForm.get('email')?.invalid && signupForm.get('email')?.touched">
+                        <small *ngIf="signupForm.get('email')?.errors?.['required']"> Email is required </small>
+
+                        <small *ngIf="signupForm.get('email')?.errors?.['email']"> Invalid email format </small>
+                    </div>
+                </div>
+
+                <!-- Phone -->
+
+                <div class="form-group">
+                    <label>Phone Number</label>
+
+                    <input type="text" placeholder="Phone number" formControlName="phone" />
+
+                    <div class="error" *ngIf="signupForm.get('phone')?.invalid && signupForm.get('phone')?.touched">
+                        <small *ngIf="signupForm.get('phone')?.errors?.['required']">
+                            Phone number is required
+                        </small>
+
+                        <small *ngIf="signupForm.get('phone')?.errors?.['pattern']">
+                            Enter valid 10 digit number
+                        </small>
+                    </div>
+                </div>
+
+                <!-- Password -->
+
+                <div class="form-group">
+                    <label>Password</label>
+                    <input type="password" placeholder="Password" formControlName="password"
+                        autocomplete="new-password" />
+                    <div class="password-rules">
+                        <p [class.valid]="signupForm.get('password')?.value?.length >= 8"> ✓ At least 8 characters </p>
+                        <p [class.valid]="signupForm.get('password')?.value?.match('[A-Z]')"> ✓ One uppercase letter</p>
+                        <p [class.valid]="signupForm.get('password')?.value?.match('[0-9]')"> ✓ One number </p>
+                        <p [class.valid]=" signupForm.get('password')?.value?.match('[!@#$%^&*(),.?:{}|<>]')"> ✓ One
+                            special character</p>
+                    </div>
+
+                    <div class="error"
+                        *ngIf="signupForm.get('password')?.invalid && signupForm.get('password')?.touched">
+                        <small *ngIf="signupForm.get('password')?.errors?.['required']">
+                            Password is required
+                        </small> <br>
+                        <small *ngIf="signupForm.get('password')?.errors?.['minlength']">
+                            Minimum 8 characters required
+                        </small> <br>
+                        <small *ngIf="signupForm.get('password')?.errors?.['pattern']">
+                            Password must contain uppercase, number, and special character
+                        </small>
+                    </div>
+
+                </div>
+
+                <!-- Confirm Password -->
+
+                <div class="form-group">
+                    <label>Confirm Password</label>
+
+                    <input type="password" formControlName="confirmPassword" placeholder="Confirm password"
+                        autocomplete="new-password" />
+
+                    <div class="error"
+                        *ngIf="signupForm.get('confirmPassword')?.invalid &&signupForm.get('confirmPassword')?.touched">
+                        <small *ngIf="signupForm.get('confirmPassword')?.errors?.['required']">
+                            Confirm password is required
+                        </small>
+                    </div>
+
+                    <div class="error"
+                        *ngIf="signupForm.hasError('passwordMismatch') && signupForm.get('confirmPassword')?.touched">
+                        <small>
+                            Passwords do not match
+                        </small>
+                    </div>
+                </div>
+
+                <button type="submit" [disabled]="signupForm.invalid">Sign Up</button>
+            </form>
+
+            <div class="login-link">
+                Already have an account?
+                <a routerLink="/login"><span>Login</span></a>
+            </div>
+        </div>
+    </div>
+</div>

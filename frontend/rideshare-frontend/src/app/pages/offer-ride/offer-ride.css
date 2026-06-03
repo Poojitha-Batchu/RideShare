@@ -1,0 +1,159 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+.offer-ride-page {
+    min-height: 100vh;
+    background: #f4f7fb;
+    padding: 20px 60px;
+    font-family: Arial, sans-serif;
+}
+
+/* Full Width Container */
+
+.offer-ride-container {
+    width: 100%;
+    background: #ffffff;
+    padding: 40px;
+    border-radius: 18px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+    margin: 0px auto;
+}
+
+/* Heading */
+
+.offer-ride-container h2 {
+    font-size: 30px;
+    color: #1565c0;
+    margin-bottom: 10px;
+}
+
+.subtitle {
+    color: #666;
+    margin-bottom: 24px;
+    font-size: 15px;
+}
+
+/* Form */
+
+form {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+}
+
+/* 3 Columns Per Row */
+
+.row {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 24px;
+}
+
+/* Form Group */
+.form-group {
+    display: flex;
+    flex-direction: column;
+}
+
+.form-group label {
+    margin-bottom: 8px;
+    font-size: 15px;
+    font-weight: 600;
+    color: #333;
+}
+
+/* Inputs */
+.form-group input,
+.form-group textarea {
+    width: 100%;
+    padding: 12px;
+    border: 1px solid #dcdcdc;
+    border-radius: 10px;
+    font-size: 15px;
+    outline: none;
+    transition: 0.3s;
+}
+
+.full-row {
+    display: flex;
+}
+
+.full-row .form-group {
+    width: 100%;
+}
+
+/* Focus Effect */
+.form-group input:focus,
+.form-group textarea:focus {
+    border-color: #1976d2;
+    box-shadow: 0 0 0 3px rgba(25, 118, 210, 0.12);
+}
+
+/* Textarea */
+textarea {
+    resize: none;
+    max-height: 80px;
+    overflow-y: auto;
+    scrollbar-width: thin;
+}
+
+/* Full Width Row */
+.full-width {
+    grid-column: span 3;
+}
+
+/* Button */
+.button-group{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 30px;
+}
+.submit-btn {
+    width: 200px;
+    padding: 12px;
+    border: none;
+    border-radius: 10px;
+    background: #1976d2;
+    color: white;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+.submit-btn:hover {
+    background: #1565c0;
+    transform: translateY(-2px);
+}
+
+.cancel-btn {
+    width: 200px;
+    padding: 12px;
+    border: 1px solid #dcdcdc;
+    border-radius: 10px;
+    background: #ffffff;
+    color: #666;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+.cancel-btn:hover {
+    background: #f5f5f5;
+    border-color: #999;
+    transform: translateY(-2px);
+}
+.error {
+    margin-top: 8px;
+}
+
+.error small {
+    color: #dc2626;
+    font-size: 14px;
+    font-weight: 500;
+}

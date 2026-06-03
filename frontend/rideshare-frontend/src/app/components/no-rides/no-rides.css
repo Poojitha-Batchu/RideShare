@@ -1,0 +1,22 @@
+.no-rides {
+    width: 80%;
+    min-height: 150px;
+    margin: 20px auto;
+    align-items: center;
+    text-align: center;
+    background: #ffffff;
+    border-radius: 18px;
+    padding: 20px 40px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+}
+
+.no-rides h2 {
+    font-size: 26px;
+    color: #1e293b;
+    margin-bottom: 12px;
+}
+
+.no-rides p {
+    font-size: 16px;
+    color: #64748b;
+}

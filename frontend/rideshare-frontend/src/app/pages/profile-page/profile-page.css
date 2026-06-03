@@ -1,0 +1,237 @@
+.profile-page {
+    min-height: 100vh;
+    background: #f8fafc;
+    display: flex;
+    gap: 40px;
+    padding: 40px;
+    margin: 0 auto;
+    max-width: 1200px;
+    flex-wrap: wrap;
+    transition: 0.3s ease;
+}
+
+/* Initial Center Position */
+.profile-page:not(.edit-mode) {
+    justify-content: center;
+    align-items: flex-start;
+}
+
+/* When Edit Form Opens */
+.profile-page.edit-mode {
+    justify-content: space-between;
+}
+
+.profile-card,
+.edit-profile-card {
+    flex: 1;
+    background: white;
+    border-radius: 20px;
+    padding: 40px;
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.08);
+    max-width: 500px;
+}
+
+.profile-image {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 20px;
+}
+
+.profile-image img,
+.default-user-icon {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    background: #e2e8f0;
+    font-size: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* PROFILE HEADER */
+.profile-header {
+    display: flex;
+    justify-content: center;
+    gap: 24px;
+}
+
+/* PROFILE INFO */
+.profile-info h1 {
+    font-size: 24px;
+    font-weight: 700;
+    color: #1d4ed8;
+    margin: 10px 0;
+}
+
+/* META ROW */
+.profile-meta {
+    display: flex;
+    align-items: center;
+    gap: 18px;
+    color: #475569;
+    font-size: 20px;
+}
+
+/* RATING */
+.rating-section {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 16px;
+}
+
+.rating-section i {
+    color: #fbbf24;
+    font-size: 16px;
+}
+
+/* DIVIDER */
+.meta-divider {
+    width: 2px;
+    height: 28px;
+    background: #cbd5e1;
+}
+
+/* RIDES */
+.rides-section {
+    color: #475569;
+    font-size: 16px;
+    font-weight: 500;
+}
+
+/* TOTAL EARNED */
+.total-earned-card {
+    margin-bottom: 10px;
+    border-radius: 22px;
+    padding: 14px;
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    border: 2px solid #e2e8f0;
+}
+
+.earned-icon {
+    width: 32px;
+    height: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 30px;
+}
+
+.earned-icon i {
+    background: #e8f7ec;
+    color: #16a34a;
+    font-size: 20px;
+    padding: 10px;
+    border-radius: 20px;
+}
+
+.earned-info{
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    justify-content: center;
+}
+
+.total-earned-card p {
+    margin: 0;
+    opacity: 0.9;
+    font-size: 18px;
+}
+
+.total-earned-card h2 {
+    font-size: 18px;
+    color: #16a34a;
+    margin: 0;
+}
+
+.profile-details {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+}
+
+.detail {
+    background: #f8fafc;
+    padding: 12px;
+    border-radius: 12px;
+}
+
+.detail strong {
+    color: #0f172a;
+}
+
+.detail p {
+    color: #475569;
+    margin: 2px 0;
+}
+
+.joined-date {
+    margin-top: 20px;
+    padding-top: 10px;
+    border-top: 1px solid #e2e8f0;
+    text-align: center;
+    color: #64748b;
+    font-size: 14px;
+}
+
+.joined-date p {
+    margin: 0;
+}
+
+.joined-date strong {
+    color: #0f172a;
+}
+
+.button-group {
+    display: flex;
+    gap: 12px;
+    margin-top: 20px;
+}
+
+.save-btn,
+.cancel-btn {
+    flex: 1;
+}
+
+.cancel-btn {
+    background: #e2e8f0;
+    color: #0f172a;
+}
+
+button {
+    width: 100%;
+    margin-top: 30px;
+    background: #1d4ed8;
+    color: white;
+    border: none;
+    padding: 14px;
+    border-radius: 10px;
+    cursor: pointer;
+    font-size: 16px;
+}
+
+.form-group {
+    margin-bottom: 20px;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 8px;
+}
+
+.form-group input,
+.form-group select {
+    width: 100%;
+    padding: 12px;
+    border: 1px solid #cbd5e1;
+    border-radius: 8px;
+}
+
+.form-group input:disabled {
+    background-color: #f1f5f9;
+    cursor: not-allowed;
+    color: #64748b;
+}
