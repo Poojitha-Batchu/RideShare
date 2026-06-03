@@ -1,7 +1,5 @@
 # RideShare
 
-# RideShare
-
 RideShare is a full-stack ride-sharing application built using **Django (Backend)** and **Angular (Frontend)**. The platform allows users to offer rides, book rides, manage bookings, track ride status, and perform ride-related operations through a modern user interface.
 
 ---
