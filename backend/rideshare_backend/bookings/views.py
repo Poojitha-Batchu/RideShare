@@ -458,13 +458,6 @@ def cancel_ride(request):
         ride.status = "CANCELLED"
         ride.save()
 
-        # UPDATE ALL BOOKINGS
-        bookings = Booking.objects.filter(ride=ride, booking_status="CONFIRMED")
-
-        for booking in bookings:
-            booking.booking_status = "CANCELLED"
-            booking.save()
-
         return Response({"success": True, "message": "Ride cancelled successfully"})
 
     except Exception as e:

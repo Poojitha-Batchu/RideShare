@@ -1,11 +1,13 @@
-from datetime import timedelta
-
+from datetime import timedelta, datetime
+from django.db.models import Q
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from rest_framework.decorators import permission_classes
 from rest_framework.permissions import IsAuthenticated
 from rest_framework import status
 from django.utils import timezone
+from django.db import transaction
+
 
 from .models import Ride
 from .serializers import RideSerializer
@@ -21,17 +23,14 @@ def get_all_rides(request):
     today = local_now.date()
     current_time = local_now.time()
 
-    print(f"Today's Date: {today}, Current Time: {current_time}")
-
-    local_now = timezone.localtime(timezone.now())
-
-    print(local_now)
-
     try:
         rides = Ride.objects.filter(
-            status="ACTIVE",
-            pickup_date__gte=today,
-            pickup_time__gte=current_time
+            Q(pickup_date__gt=today) |
+            Q(
+                pickup_date=today,
+                pickup_time__gte=current_time
+            ),
+            status="ACTIVE"
         ).order_by("-created_at")
         
         serializer = RideSerializer(rides, many=True, context={"request": request})
@@ -62,25 +61,42 @@ def get_all_rides(request):
 def offer_ride(request):
 
     try:
-        # GET LAST OFFERED RIDE
-        last_ride = Ride.objects.filter(
+
+        pickup_date = request.data.get("pickup_date")
+        pickup_time = request.data.get("pickup_time")
+
+        new_pickup_datetime = timezone.make_aware(
+            datetime.strptime(
+                f"{pickup_date} {pickup_time}",
+                "%Y-%m-%d %H:%M"
+            )
+        )
+
+        existing_rides = Ride.objects.filter(
             user=request.user
-        ).order_by("-created_at").first()
+        ).exclude(status="CANCELLED")
 
-        if last_ride:
+        for ride in existing_rides:
 
-            next_allowed_time = last_ride.created_at + timedelta(hours=1)
-            if timezone.now() < next_allowed_time:
-
-                remaining_minutes = int(
-                    (next_allowed_time - timezone.now()).total_seconds() / 60
+            existing_pickup_datetime = timezone.make_aware(
+                datetime.combine(
+                    ride.pickup_date,
+                    ride.pickup_time
                 )
+            )
+
+            difference = abs(
+                (new_pickup_datetime - existing_pickup_datetime).total_seconds()
+            )
+
+            if difference < 3600:  # 60 minutes
+                remaining_minutes = int(difference // 60)
 
                 return Response(
                     {
                         "success": False,
                         "message": (
-                            f"You can offer another ride after {remaining_minutes} minute(s)"
+                            f"You already have a ride within 60 minutes of this pickup time."
                         ),
                     },
                     status=status.HTTP_400_BAD_REQUEST,
@@ -89,9 +105,12 @@ def offer_ride(request):
         serializer = RideSerializer(data=request.data, context={"request": request})
         
         if serializer.is_valid():
-            ride = serializer.save(user=request.user)
+            with transaction.atomic():
+                ride = serializer.save(user=request.user)
 
-            RideChatRoom.objects.create(ride=ride)  # Create chat room for the ride
+                # Ensure we don't fail after the ride is created.
+                # RideChatRoom has a OneToOneField to Ride, so use get_or_create.
+                RideChatRoom.objects.get_or_create(ride=ride)
 
             return Response(
                 {
@@ -101,6 +120,7 @@ def offer_ride(request):
                 },
                 status=status.HTTP_201_CREATED,
             )
+
 
         return Response(
             {
