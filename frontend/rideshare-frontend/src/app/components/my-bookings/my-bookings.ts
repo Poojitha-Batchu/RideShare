@@ -57,6 +57,8 @@ export class MyBookings implements OnInit {
     // TO GROUP BOOKINGS BY RIDE
     groupBookingsByDate() {
         const grouped: any = {};
+        const openState = new Map(this.groupedBookings.map((group: any) => [group.date, group.isOpen]));
+
         this.bookings.forEach((booking: any) => {
             const date = booking.pickup_date;
             if (!grouped[date]) {
@@ -66,8 +68,8 @@ export class MyBookings implements OnInit {
         });
 
         this.groupedBookings = Object.keys(grouped).map(date => ({
-            date: date,
-            isOpen: false,
+            date,
+            isOpen: openState.get(date) ?? false,
             rides: grouped[date]
         }));
         this.cdr.detectChanges();
@@ -159,8 +161,7 @@ export class MyBookings implements OnInit {
                 });
 
                 // Regroup bookings to ensure UI reflects the changes
-                // this.groupBookingsByDate();
-                this.cdr.detectChanges();
+                this.groupBookingsByDate();
 
                 // CLEAR SUCCESS MESSAGE
                 setTimeout(() => {
@@ -266,8 +267,7 @@ export class MyBookings implements OnInit {
                 });
 
                 // Regroup bookings to ensure UI reflects the changes
-                // this.groupBookingsByDate();
-                this.cdr.detectChanges();
+                this.groupBookingsByDate();
 
                 setTimeout(() => {
                     this.reviewSuccessMessage = '';
@@ -332,8 +332,7 @@ export class MyBookings implements OnInit {
                 });
 
                 // Regroup bookings to ensure UI reflects the changes
-                // this.groupBookingsByDate();
-                this.cdr.detectChanges();
+                this.groupBookingsByDate();
 
                 setTimeout(() => {
                     this.paymentSuccessMessage = '';

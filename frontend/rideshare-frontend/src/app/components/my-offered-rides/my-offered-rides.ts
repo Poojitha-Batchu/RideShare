@@ -2,7 +2,7 @@ import { CommonModule, DatePipe } from '@angular/common';
 import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
 import { Bookings } from '../../services/bookings';
 import { Message } from '../message/message';
-import { Router, RouterLink } from '@angular/router';
+import { Router } from '@angular/router';
 import { Rides } from '../../services/rides';
 import { RideChat } from '../ride-chat/ride-chat';
 import { NoRides } from '../no-rides/no-rides';
@@ -43,8 +43,9 @@ export class MyOfferedRides implements OnInit {
 
     groupRidesByDate() {
         const grouped: any = {};
-        this.rides.forEach((ride: any) => {
+        const openState = new Map(this.groupedRides.map((group: any) => [group.date, group.isOpen]));
 
+        this.rides.forEach((ride: any) => {
             const date = ride.pickup_date;
             if (!grouped[date]) {
                 grouped[date] = [];
@@ -53,8 +54,8 @@ export class MyOfferedRides implements OnInit {
         });
 
         this.groupedRides = Object.keys(grouped).map(date => ({
-            date: date,
-            isOpen: false,
+            date,
+            isOpen: openState.get(date) ?? false,
             rides: grouped[date]
         }));
         this.cdr.detectChanges();
@@ -133,8 +134,7 @@ export class MyOfferedRides implements OnInit {
                 });
 
                 // Regroup rides to ensure UI reflects the changes
-                // this.groupRidesByDate();
-                this.cdr.detectChanges();
+                this.groupRidesByDate();
 
                 setTimeout(() => {
                     this.cancelSuccessMessage = '';
@@ -214,8 +214,7 @@ export class MyOfferedRides implements OnInit {
                 });
 
                 // Regroup rides to ensure UI reflects the changes
-                // this.groupRidesByDate();
-                this.cdr.detectChanges();
+                this.groupRidesByDate();
 
                 setTimeout(() => {
                     this.startRideSuccessMessage = '';
@@ -270,8 +269,7 @@ export class MyOfferedRides implements OnInit {
                 });
 
                 // Regroup rides to ensure UI reflects the changes
-                // this.groupRidesByDate();
-                this.cdr.detectChanges();
+                this.groupRidesByDate();
 
                 setTimeout(() => {
                     this.completeRideSuccessMessage = '';
