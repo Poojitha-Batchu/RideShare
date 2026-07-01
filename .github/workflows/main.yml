@@ -23,20 +23,20 @@ jobs:
 
       - name: Configure Docker authentication
         run: |
-          gcloud auth configure-docker --quiet
+          gcloud auth configure-docker us-docker.pkg.dev --quiet
 
       - name: Build backend Docker image
         run: |
-          docker build -t gcr.io/${{ secrets.GCP_PROJECT_ID }}/rideshare-backend:latest ./backend
+          docker build -t us-docker.pkg.dev/${{ secrets.GCP_PROJECT_ID }}/rideshare-images/rideshare-backend:latest ./backend
 
       - name: Push backend image
         run: |
-          docker push gcr.io/${{ secrets.GCP_PROJECT_ID }}/rideshare-backend:latest
+          docker push us-docker.pkg.dev/${{ secrets.GCP_PROJECT_ID }}/rideshare-images/rideshare-backend:latest
 
       - name: Deploy backend to Cloud Run
         run: |
           gcloud run deploy rideshare-backend \
-            --image gcr.io/${{ secrets.GCP_PROJECT_ID }}/rideshare-backend:latest \
+            --image us-docker.pkg.dev/${{ secrets.GCP_PROJECT_ID }}/rideshare-images/rideshare-backend:latest \
             --region ${{ secrets.GCP_REGION }} \
             --platform managed \
             --allow-unauthenticated \
@@ -67,16 +67,16 @@ jobs:
 
       - name: Build frontend Docker image
         run: |
-          docker build -t gcr.io/${{ secrets.GCP_PROJECT_ID }}/rideshare-frontend:latest ./frontend/rideshare-frontend
+          docker build -t us-docker.pkg.dev/${{ secrets.GCP_PROJECT_ID }}/rideshare-images/rideshare-frontend:latest ./frontend/rideshare-frontend
 
       - name: Push frontend image
         run: |
-          docker push gcr.io/${{ secrets.GCP_PROJECT_ID }}/rideshare-frontend:latest
+          docker push us-docker.pkg.dev/${{ secrets.GCP_PROJECT_ID }}/rideshare-images/rideshare-frontend:latest
 
       - name: Deploy frontend to Cloud Run
         run: |
           gcloud run deploy rideshare-frontend \
-            --image gcr.io/${{ secrets.GCP_PROJECT_ID }}/rideshare-frontend:latest \
+            --image us-docker.pkg.dev/${{ secrets.GCP_PROJECT_ID }}/rideshare-images/rideshare-frontend:latest \
             --region ${{ secrets.GCP_REGION }} \
             --platform managed \
             --allow-unauthenticated \
