@@ -77,12 +77,8 @@ jobs:
       - name: Deploy frontend to Cloud Run
         run: |
           gcloud run deploy rideshare-frontend \
-<<<<<<< HEAD
-            --image gcr.io/${{ secrets.GCP_PROJECT_ID }}/rideshare-frontend:latest \
-=======
             --image us-docker.pkg.dev/${{ secrets.GCP_PROJECT_ID }}/rideshare-images/rideshare-frontend:latest \
->>>>>>> 528f485 (Updated main yaml file)
             --region ${{ secrets.GCP_REGION }} \
             --platform managed \
             --allow-unauthenticated \
-            --image us-docker.pkg.dev/${{ secrets.GCP_PROJECT_ID }}/rideshare-images/rideshare-frontend:latest \
+            --set-env-vars "API_BASE_URL=${{ env.BACKEND_URL }}"
