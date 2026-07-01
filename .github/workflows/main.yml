@@ -10,6 +10,9 @@ jobs:
   build-backend-and-deploy:
     name: Build backend image and deploy to Cloud Run
     runs-on: ubuntu-latest
+    # Map the step output to a job output variable
+    outputs:
+      backend_url: ${{ steps.get-url.outputs.BACKEND_URL }}
 
     steps:
       - name: Checkout repository
@@ -64,8 +67,11 @@ jobs:
             --env-vars-file /tmp/backend-env.yaml
 
       - name: Get backend URL
+        id: get-url
         run: |
-          echo "BACKEND_URL=$(gcloud run services describe rideshare-backend --region=${{ secrets.GCP_REGION }} --platform=managed --format='value(status.url)')" >> $GITHUB_ENV
+          # Fetch URL and set it as an explicit step output
+          URL=$(gcloud run services describe rideshare-backend --region=${{ secrets.GCP_REGION }} --platform=managed --format='value(status.url)')
+          echo "BACKEND_URL=$URL" >> $GITHUB_OUTPUT
 
   build-frontend-and-deploy:
     name: Build frontend image and deploy to Cloud Run
@@ -92,7 +98,8 @@ jobs:
 
       - name: Build frontend Docker image
         run: |
-          docker build -t gcr.io/${{ secrets.GCP_PROJECT_ID }}/rideshare-frontend:latest ./frontend/rideshare-frontend
+          # Using --no-cache ensures Docker doesn't reuse an old broken build layer
+          docker build --no-cache -t gcr.io/${{ secrets.GCP_PROJECT_ID }}/rideshare-frontend:latest ./frontend/rideshare-frontend
 
       - name: Push frontend image
         run: |
@@ -100,7 +107,8 @@ jobs:
 
       - name: Deploy frontend to Cloud Run
         env:
-          BACKEND_URL_VAL: ${{ env.BACKEND_URL }}
+          # FIX: Pull the backend URL out of the previous job's mapped outputs
+          BACKEND_URL_VAL: ${{ needs.build-backend-and-deploy.outputs.backend_url }}
         run: |
           cat > /tmp/frontend-env.yaml << 'YAMLEOF'
           API_BASE_URL: ${BACKEND_URL_VAL}
