@@ -3,7 +3,7 @@ WORKDIR /app
 COPY package.json package-lock.json ./
 RUN npm ci
 COPY . ./
-RUN npm run build --configuration production
+RUN npm run build
 
 FROM nginx:stable-alpine
 COPY --from=build /app/dist/rideshare-frontend /usr/share/nginx/html
