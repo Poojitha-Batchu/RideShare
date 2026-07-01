@@ -98,25 +98,19 @@ jobs:
 
       - name: Build frontend Docker image
         run: |
-          # Using --no-cache ensures Docker doesn't reuse an old broken build layer
-          docker build --no-cache -t gcr.io/${{ secrets.GCP_PROJECT_ID }}/rideshare-frontend:latest ./frontend/rideshare-frontend
+          docker build --no-cache \
+            --build-arg API_BASE_URL=${{ needs.build-backend-and-deploy.outputs.backend_url }} \
+            -t gcr.io/${{ secrets.GCP_PROJECT_ID }}/rideshare-frontend:latest ./frontend/rideshare-frontend
 
       - name: Push frontend image
         run: |
           docker push gcr.io/${{ secrets.GCP_PROJECT_ID }}/rideshare-frontend:latest
 
       - name: Deploy frontend to Cloud Run
-        env:
-          # FIX: Pull the backend URL out of the previous job's mapped outputs
-          BACKEND_URL_VAL: ${{ needs.build-backend-and-deploy.outputs.backend_url }}
         run: |
-          cat > /tmp/frontend-env.yaml << 'YAMLEOF'
-          API_BASE_URL: ${BACKEND_URL_VAL}
-          YAMLEOF
           gcloud run deploy rideshare-frontend \
             --image gcr.io/${{ secrets.GCP_PROJECT_ID }}/rideshare-frontend:latest \
             --region ${{ secrets.GCP_REGION }} \
             --platform managed \
             --allow-unauthenticated \
-            --service-account=github-actions-runner@${{ secrets.GCP_PROJECT_ID }}.iam.gserviceaccount.com \
-            --env-vars-file /tmp/frontend-env.yaml
+            --service-account=github-actions-runner@${{ secrets.GCP_PROJECT_ID }}.iam.gserviceaccount.com
