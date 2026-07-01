@@ -22,10 +22,13 @@ jobs:
 
       - name: Set up Cloud SDK
         uses: google-github-actions/setup-gcloud@v2
+        with:
+          project_id: ${{ secrets.GCP_PROJECT_ID }}
 
       - name: Configure Docker authentication
         run: |
           gcloud auth configure-docker us-docker.pkg.dev --quiet
+          gcloud auth list
 
       - name: Build backend Docker image
         run: |
@@ -58,14 +61,19 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Set up Node.js
-        uses: actions/setup-node@v5
+      - name: Authenticate to Google Cloud
+        uses: google-github-actions/auth@v2
         with:
-          node-version: '22'
+          credentials_json: ${{ secrets.GCP_SA_KEY }}
 
-      - name: Install frontend dependencies
-        working-directory: ./frontend/rideshare-frontend
-        run: npm ci
+      - name: Set up Cloud SDK
+        uses: google-github-actions/setup-gcloud@v2
+        with:
+          project_id: ${{ secrets.GCP_PROJECT_ID }}
+
+      - name: Configure Docker authentication
+        run: |
+          gcloud auth configure-docker us-docker.pkg.dev --quiet
 
       - name: Build frontend Docker image
         run: |
