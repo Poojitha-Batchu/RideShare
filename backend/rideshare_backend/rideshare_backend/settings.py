@@ -10,22 +10,25 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/6.0/ref/settings/
 """
 
+import os
 from pathlib import Path
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/6.0/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = "django-insecure-_7%s5&2p)vavau@ew=5p#j@1-u!%vta48y-7t--_j5+7au^!fi"
+SECRET_KEY = os.environ.get(
+    "DJANGO_SECRET_KEY",
+    "django-insecure-_7%s5&2p)vavau@ew=5p#j@1-u!%vta48y-7t--_j5+7au^!fi",
+)
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = os.environ.get("DJANGO_DEBUG", "True").lower() in ["1", "true", "yes"]
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = os.environ.get("ALLOWED_HOSTS", "").split(",") if os.environ.get("ALLOWED_HOSTS") else []
 
 
 # Application definition
@@ -85,14 +88,23 @@ WSGI_APPLICATION = "rideshare_backend.wsgi.application"
 # Database
 # https://docs.djangoproject.com/en/6.0/ref/settings/#databases
 
+CLOUD_SQL_CONNECTION_NAME = os.environ.get("CLOUD_SQL_CONNECTION_NAME")
+DB_HOST = os.environ.get("DB_HOST")
+if CLOUD_SQL_CONNECTION_NAME and not DB_HOST:
+    DB_HOST = f"/cloudsql/{CLOUD_SQL_CONNECTION_NAME}"
+
 DATABASES = {
     "default": {
         "ENGINE": "django.db.backends.mysql",
-        "NAME": "rideshare_db",
-        "USER": "root",
-        "PASSWORD": "XXXXXX",  # Replace with your actual MySQL password
-        "HOST": "localhost",
-        "PORT": "3306",
+        "NAME": os.environ.get("DB_NAME", "rideshare_db"),
+        "USER": os.environ.get("DB_USER", "root"),
+        "PASSWORD": os.environ.get("DB_PASSWORD", "superuser"),
+        "HOST": DB_HOST or "127.0.0.1",
+        "PORT": os.environ.get("DB_PORT", "3306"),
+        "OPTIONS": {
+            "init_command": "SET sql_mode='STRICT_TRANS_TABLES'",
+            "charset": "utf8mb4",
+        },
     }
 }
 
@@ -129,6 +141,7 @@ USE_TZ = True
 
 
 STATIC_URL = "static/"
+STATIC_ROOT = BASE_DIR / "staticfiles"
 
 # Media files (User uploads)
 MEDIA_URL = '/media/'
@@ -160,5 +173,5 @@ SIMPLE_JWT = {
 AUTH_USER_MODEL = 'accounts.User'
 
 # Email configuration for signup success functionality
-EMAIL_HOST_USER = "XXXXXXX@gmail.com"
-EMAIL_HOST_PASSWORD = "XXXXXX"  # Replace with your actual email password or use environment variables for security
+EMAIL_HOST_USER = "20bd5a0401@gmail.com"
+EMAIL_HOST_PASSWORD = "ukkacvqjzcwnkafc"  # Replace with your actual email password or use environment variables for security

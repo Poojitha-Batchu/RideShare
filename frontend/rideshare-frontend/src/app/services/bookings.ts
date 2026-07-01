@@ -1,12 +1,13 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { API_CONFIG } from './api-config';
 
 @Injectable({
     providedIn: 'root',
 })
 export class Bookings {
 
-    private bookingBaseUrl = 'http://localhost:8000/bookings';
+    private bookingBaseUrl = `${API_CONFIG.baseUrl}/bookings`;
 
     private bookRideUrl = `${this.bookingBaseUrl}/book-ride/`;
     private myBookingsUrl = `${this.bookingBaseUrl}/my-bookings/`;

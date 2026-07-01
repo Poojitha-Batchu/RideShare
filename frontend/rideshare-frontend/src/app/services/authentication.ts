@@ -1,12 +1,13 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Subject } from 'rxjs';
+import { API_CONFIG } from './api-config';
 
 @Injectable({
     providedIn: 'root',
 })
 export class Authentication {
-    private backendUrl = 'http://localhost:8000';
+    private backendUrl = API_CONFIG.baseUrl;
     private signupUrl = `${this.backendUrl}/signup/`;
     private loginUrl = `${this.backendUrl}/login/`;
     private profileUrl = `${this.backendUrl}/profile/`;

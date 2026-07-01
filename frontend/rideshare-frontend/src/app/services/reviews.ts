@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { API_CONFIG } from './api-config';
 
 
 @Injectable({
@@ -7,7 +8,7 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 })
 export class Reviews {
 
-    private reviewsBaseUrl = 'http://localhost:8000/reviews';
+    private reviewsBaseUrl = `${API_CONFIG.baseUrl}/reviews`;
     private submitReviewUrl = `${this.reviewsBaseUrl}/add-review/`;
     private getReviewUrl = `${this.reviewsBaseUrl}/get-review/`; // + booking_id
 

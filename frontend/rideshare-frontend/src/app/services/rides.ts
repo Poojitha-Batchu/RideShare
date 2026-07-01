@@ -1,12 +1,13 @@
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
+import { API_CONFIG } from './api-config';
 
 @Injectable({
     providedIn: 'root',
 })
 export class Rides {
 
-    private baseUrl = 'http://localhost:8000/rides';
+    private baseUrl = `${API_CONFIG.baseUrl}/rides`;
     private getRidesUrl = `${this.baseUrl}/all/`;
     private offerRideUrl = `${this.baseUrl}/offer-ride/`;
     private searchRidesUrl = `${this.baseUrl}/search-ride/`;
