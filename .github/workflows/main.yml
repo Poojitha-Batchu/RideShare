@@ -60,6 +60,7 @@ jobs:
             --platform managed \
             --allow-unauthenticated \
             --add-cloudsql-instances "${CLOUD_SQL_CONN}" \
+            --service-account=github-actions-runner@${{ secrets.GCP_PROJECT_ID }}.iam.gserviceaccount.com \
             --env-vars-file /tmp/backend-env.yaml
 
       - name: Get backend URL
@@ -109,4 +110,5 @@ jobs:
             --region ${{ secrets.GCP_REGION }} \
             --platform managed \
             --allow-unauthenticated \
+            --service-account=github-actions-runner@${{ secrets.GCP_PROJECT_ID }}.iam.gserviceaccount.com \
             --env-vars-file /tmp/frontend-env.yaml
