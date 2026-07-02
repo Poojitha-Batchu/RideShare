@@ -185,13 +185,19 @@ def update_profile(request):
         user = request.user
         uploaded_file = request.FILES.get('profile_image')
         
+        # Prepare serializer data from request
+        serializer_data = request.data.copy() if hasattr(request.data, 'copy') else dict(request.data)
+        
         if uploaded_file:
-            file_url = upload_profile_image_to_storage(user, uploaded_file)
-            if file_url:
-                user.profile_image = file_url
-                user.save(update_fields=['profile_image'])
+            try:
+                file_url = upload_profile_image_to_storage(user, uploaded_file)
+                if file_url:
+                    serializer_data['profile_image'] = file_url
+            except Exception as upload_err:
+                logger.error(f"Image upload error: {upload_err}")
+                serializer_data['profile_image'] = None
 
-        serializer = UserSerializer(user, data=request.data, partial=True)
+        serializer = UserSerializer(user, data=serializer_data, partial=True)
 
         if serializer.is_valid():
             serializer.save()
@@ -214,6 +220,7 @@ def update_profile(request):
         )
 
     except Exception as e:
+        logger.error(f"Profile update exception: {e}")
         return Response(
             {
                 "success": False,
