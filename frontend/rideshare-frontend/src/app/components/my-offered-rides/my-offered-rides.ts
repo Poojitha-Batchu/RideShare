@@ -7,6 +7,7 @@ import { Rides } from '../../services/rides';
 import { RideChat } from '../ride-chat/ride-chat';
 import { NoRides } from '../no-rides/no-rides';
 import { AppLogger } from '../../services/app-logger';
+import { buildProfileImageUrl } from '../../services/profile-image-url';
 
 @Component({
     selector: 'app-my-offered-rides',
@@ -37,6 +38,10 @@ export class MyOfferedRides implements OnInit {
     groupedRides: any[] = [];  // to hold rides grouped by date for better display
 
     constructor(private bookingService: Bookings, private cdr: ChangeDetectorRef, private router: Router, private rideService: Rides) { }
+
+    getPassengerImageUrl(imageValue: string | null | undefined): string {
+        return buildProfileImageUrl(imageValue);
+    }
 
     ngOnInit(): void {
         this.loadMyRides();

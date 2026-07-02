@@ -1,9 +1,11 @@
 import logging
+import os
 from urllib import request
 
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from .serializers import UserSerializer
+from .storage import build_profile_image_name
 from django.contrib.auth.hashers import check_password
 from rest_framework_simplejwt.tokens import RefreshToken
 from .models import User
@@ -14,6 +16,8 @@ from rest_framework.permissions import IsAuthenticated
 from django.contrib.auth.hashers import make_password
 
 from django.db.models import Avg, Sum
+from django.core.files.base import ContentFile
+from django.conf import settings
 
 logger = logging.getLogger('frontend_logs')
 from bookings.models import Booking
@@ -21,6 +25,32 @@ from ride_review.models import RideReview
 from rides.models import Ride
 
 import threading
+
+
+def upload_profile_image_to_storage(user, uploaded_file):
+    if not uploaded_file:
+        return None
+
+    if not getattr(settings, 'USE_GCS_FOR_MEDIA', False):
+        return None
+
+    bucket_name = getattr(settings, 'GS_BUCKET_NAME', None)
+    if not bucket_name:
+        return None
+
+    try:
+        from google.cloud import storage
+    except ImportError:
+        return None
+
+    file_name = build_profile_image_name(user.id, uploaded_file.name)
+    storage_client = storage.Client()
+    bucket = storage_client.bucket(bucket_name)
+    blob = bucket.blob(file_name)
+    blob.upload_from_file(uploaded_file, content_type=uploaded_file.content_type)
+    return blob.public_url
+
+
 def send_mail_async(email, name):
     threading.Thread(
         target=send_signup_mail,
@@ -165,10 +195,25 @@ def update_profile(request):
 
     try:
         user = request.user
-        serializer = UserSerializer(user, data=request.data, partial=True)
+        uploaded_file = request.FILES.get('profile_image')
+        serializer_data = request.data.copy() if hasattr(request.data, 'copy') else dict(request.data)
+        cloud_url = None
+
+        if uploaded_file:
+            cloud_url = upload_profile_image_to_storage(user, uploaded_file)
+            if cloud_url:
+                serializer_data['profile_image'] = cloud_url
+            else:
+                serializer_data['profile_image'] = uploaded_file
+
+        serializer = UserSerializer(user, data=serializer_data, partial=True)
 
         if serializer.is_valid():
             serializer.save()
+
+            if cloud_url:
+                user.profile_image = cloud_url
+                user.save(update_fields=['profile_image'])
 
             return Response(
                 {

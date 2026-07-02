@@ -4,6 +4,7 @@ import { Bookings } from '../../services/bookings';
 import { FormsModule } from '@angular/forms';
 import { Message } from '../message/message';
 import { AppLogger } from '../../services/app-logger';
+import { buildProfileImageUrl } from '../../services/profile-image-url';
 
 @Component({
     selector: 'app-ride-details-card',
@@ -28,6 +29,10 @@ export class RideDetailsCard {
     paymentMethod = '';
 
     constructor(private bookingService: Bookings, private cdr: ChangeDetectorRef) { }
+
+    getImageUrl(imageValue: string | null | undefined): string {
+        return buildProfileImageUrl(imageValue);
+    }
 
     openBookingPopup(ride: any) {
         AppLogger.debug('Current user id:', this.currentUserId);

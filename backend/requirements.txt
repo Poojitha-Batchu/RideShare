@@ -7,3 +7,4 @@ secure-smtplib
 Pillow
 gunicorn
 whitenoise
+google-cloud-storage

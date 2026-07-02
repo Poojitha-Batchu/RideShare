@@ -159,6 +159,8 @@ STATIC_ROOT = BASE_DIR / "staticfiles"
 # Media files (User uploads)
 MEDIA_URL = '/media/'
 MEDIA_ROOT = BASE_DIR / 'media'
+USE_GCS_FOR_MEDIA = os.environ.get('USE_GCS_FOR_MEDIA', 'False').lower() in ['1', 'true', 'yes']
+GS_BUCKET_NAME = os.environ.get('GS_BUCKET_NAME', '')
 
 # Allow Angular Frontend to access the Django Backend API
 CORS_ALLOWED_ORIGINS = [

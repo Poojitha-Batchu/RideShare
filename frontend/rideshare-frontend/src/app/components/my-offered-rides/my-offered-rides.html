@@ -152,7 +152,7 @@
                             <div class="passenger-item" *ngFor="let passenger of ride.passengers">
                                 <div class="passenger-left">
                                     <div class="avatar">
-                                        <img *ngIf="passenger.profile_image" [src]="passenger.profile_image"
+                                        <img *ngIf="passenger.profile_image" [src]="getPassengerImageUrl(passenger.profile_image)"
                                             class="avatar-img" />
 
                                         <i class="fa-solid fa-user"></i>

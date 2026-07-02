@@ -9,7 +9,7 @@
 
             <div class="driver-section">
 
-                <img *ngIf="ride.user_profile_image; else defaultUser" [src]="ride.user_profile_image" alt="driver"
+                <img *ngIf="ride.user_profile_image; else defaultUser" [src]="getImageUrl(ride.user_profile_image)" alt="driver"
                     class="driver-image" />
 
                 <ng-template #defaultUser>

@@ -6,6 +6,7 @@ import { FormBuilder, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { Navbar } from '../../components/navbar/navbar';
 import { Message } from '../../components/message/message';
 import { AppLogger } from '../../services/app-logger';
+import { buildProfileImageUrl } from '../../services/profile-image-url';
 
 @Component({
     selector: 'app-profile-page',
@@ -66,14 +67,8 @@ export class ProfilePage implements OnInit {
     }
 
     onImageError(event: any) {
-        // console.error('Image failed to load. Image URL:', this.userData?.profile_image);
-        this.errorMessage = 'Image failed to load. Image URL';
-
-        // Clear error message after 2 seconds
-        setTimeout(() => {
-            this.errorMessage = '';
-            this.cdr.detectChanges();
-        }, 2000);
+        this.userData.profile_image = '';
+        this.cdr.detectChanges();
     }
 
     getProfile() {
@@ -82,12 +77,7 @@ export class ProfilePage implements OnInit {
                 AppLogger.debug('Profile response:', response);
                 this.userData = response;
 
-                // Construct full image URL if image exists
-                if (this.userData.profile_image && this.userData.profile_image.trim()) {
-                    if (!this.userData.profile_image.startsWith('http')) {
-                        this.userData.profile_image = this.authService['backendUrl'] + this.userData.profile_image;
-                    }
-                }
+                this.userData.profile_image = buildProfileImageUrl(this.userData.profile_image);
 
                 // console.log('Image URL:', this.userData.profile_image);
                 this.cdr.detectChanges();
@@ -171,10 +161,7 @@ export class ProfilePage implements OnInit {
                     ...response.data,
                 };
 
-                // Handle image URL
-                if (this.userData.profile_image && !this.userData.profile_image.startsWith('http')) {
-                    this.userData.profile_image = this.authService['backendUrl'] + this.userData.profile_image;
-                }
+                this.userData.profile_image = buildProfileImageUrl(this.userData.profile_image);
 
                 // Update localStorage with new user data
                 localStorage.setItem('user', JSON.stringify(this.userData));
