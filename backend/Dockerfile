@@ -21,5 +21,8 @@ COPY . ./
 WORKDIR /app/rideshare_backend
 RUN python manage.py collectstatic --noinput
 
+COPY entrypoint.sh /entrypoint.sh
+RUN chmod +x /entrypoint.sh
+
 EXPOSE 8080
-CMD ["gunicorn", "rideshare_backend.wsgi:application", "--bind", "0.0.0.0:8080"]
+ENTRYPOINT ["/entrypoint.sh"]
