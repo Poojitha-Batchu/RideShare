@@ -8,7 +8,7 @@ class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
         fields = ['id', 'full_name', 'email', 'phone', 'gender', 'password', 'date_of_birth', 'profile_image', 'created_at', 'updated_at']
-        read_only_fields = ['id', 'created_at', 'updated_at', 'email']
+        read_only_fields = ['id', 'created_at', 'updated_at']
         extra_kwargs = {
             'password': {'required': False, 'write_only': True},
             'full_name': {'required': False},
@@ -16,6 +16,7 @@ class UserSerializer(serializers.ModelSerializer):
             'gender': {'required': False},
             'date_of_birth': {'required': False},
             'profile_image': {'required': False},
+            'email': {'read_only': True, 'required': False},
         }
 
     def create(self, validated_data):
@@ -23,6 +24,12 @@ class UserSerializer(serializers.ModelSerializer):
         if 'password' in validated_data:
             validated_data['password'] = make_password(validated_data['password'])
         return User.objects.create(**validated_data)
+    
+    def get_fields(self):
+        fields = super().get_fields()
+        if self.instance is None:  # During create
+            fields['email'].read_only = False
+        return fields
     
     def update(self, instance, validated_data):
         # 🔐 hash password if provided during update
