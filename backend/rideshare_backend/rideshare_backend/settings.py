@@ -149,8 +149,17 @@ MEDIA_ROOT = BASE_DIR / 'media'
 
 # Allow Angular Frontend to access the Django Backend API
 CORS_ALLOWED_ORIGINS = [
-    "http://localhost:4200",
+    origin.strip()
+    for origin in os.environ.get("CORS_ALLOWED_ORIGINS", "http://localhost:4200").split(",")
+    if origin.strip()
 ]
+
+CORS_ALLOWED_ORIGIN_REGEXES = [
+    r"^https://.*\.run\.app$",
+    r"^http://localhost(:\d+)?$",
+]
+
+CORS_ALLOW_CREDENTIALS = True
 
 # DRF + JWT Configuration
 REST_FRAMEWORK = {
