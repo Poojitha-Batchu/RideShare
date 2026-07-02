@@ -190,15 +190,8 @@ def update_profile(request):
             if file_url:
                 user.profile_image = file_url
                 user.save(update_fields=['profile_image'])
-                
-                serializer_data = dict(request.data)
-                serializer_data['profile_image'] = file_url
-            else:
-                serializer_data = dict(request.data)
-        else:
-            serializer_data = dict(request.data)
 
-        serializer = UserSerializer(user, data=serializer_data, partial=True)
+        serializer = UserSerializer(user, data=request.data, partial=True)
 
         if serializer.is_valid():
             serializer.save()
