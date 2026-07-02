@@ -200,10 +200,14 @@ def my_bookings(request):
                 {
                     "booking_id": booking.id,
                     "driver_name": ride.user.full_name,
-                    "driver_image": (
-                        request.build_absolute_uri(ride.user.profile_image)
-                        if ride.user.profile_image and ride.user.profile_image.startswith('/media/')
+                    "driver_image": (lambda p_url, req: (
+                        p_url if p_url and (p_url.startswith('http://') or p_url.startswith('https://'))
+                        else req.build_absolute_uri(p_url) if p_url and req
+                        else p_url if p_url
                         else None
+                    ))(
+                        ride.user.profile_image,
+                        request
                     ),
                     "driver_rating": ride_data["average_rating"],
                     "pickup_location": ride.pickup_location,
