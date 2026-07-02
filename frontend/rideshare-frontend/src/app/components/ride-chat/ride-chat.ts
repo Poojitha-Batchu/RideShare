@@ -4,6 +4,7 @@ import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ChatService } from '../../services/chat';
 import { Input, Output, EventEmitter } from '@angular/core';
+import { AppLogger } from '../../services/app-logger';
 
 @Component({
     selector: 'app-ride-chat',
@@ -48,7 +49,7 @@ export class RideChat implements OnInit, OnDestroy {
     loadMessages() {
         this.chatService.getMessages(this.rideId, this.bookingId).subscribe({
             next: (res: any) => {
-                console.log('Fetched messages:', res);
+                AppLogger.debug('Fetched messages:', res);
                 this.hasAccess = res.has_access;
                 this.messages = res.messages || [];
                 this.chatActive = res.chat_active;
@@ -88,11 +89,11 @@ export class RideChat implements OnInit, OnDestroy {
 
         // CLEAR INPUT IMMEDIATELY
         this.newMessage = '';
-        console.log('Sending message:', message);
+        AppLogger.debug('Sending message:', message);
 
         this.chatService.sendMessage(this.rideId, message).subscribe({
             next: () => {
-                console.log('Message sent successfully');
+                AppLogger.debug('Message sent successfully');
 
                 this.isSending = false;
 
@@ -102,7 +103,7 @@ export class RideChat implements OnInit, OnDestroy {
             },
 
             error: (err) => {
-                console.error(err);
+                AppLogger.error('Failed to send message:', err);
 
                 this.isSending = false;
                 this.cdr.detectChanges();

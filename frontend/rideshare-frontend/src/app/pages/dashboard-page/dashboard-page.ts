@@ -4,6 +4,7 @@ import { RideDetailsCard } from '../../components/ride-details-card/ride-details
 import { Rides } from '../../services/rides';
 import { CommonModule } from '@angular/common';
 import { NoRides } from '../../components/no-rides/no-rides';
+import { AppLogger } from '../../services/app-logger';
 
 @Component({
     selector: 'app-dashboard-page',
@@ -25,7 +26,7 @@ export class DashboardPage implements OnInit {
     getAllRides() {
         this.rideService.getRides().subscribe({
             next: (res: any) => {
-                console.log("All Rides:", res);
+                AppLogger.debug('All rides:', res);
                 this.rides = res.data;
                 this.hadRides = this.rides.length > 0;
                 this.cdr.detectChanges();

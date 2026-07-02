@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { Bookings } from '../../services/bookings';
 import { FormsModule } from '@angular/forms';
 import { Message } from '../message/message';
+import { AppLogger } from '../../services/app-logger';
 
 @Component({
     selector: 'app-ride-details-card',
@@ -29,7 +30,7 @@ export class RideDetailsCard {
     constructor(private bookingService: Bookings, private cdr: ChangeDetectorRef) { }
 
     openBookingPopup(ride: any) {
-        console.log('cureentUserId:', this.currentUserId);
+        AppLogger.debug('Current user id:', this.currentUserId);
         if (ride.available_seats === 0) {
             return;
         }
@@ -67,13 +68,13 @@ export class RideDetailsCard {
             payment_method: this.paymentMethod
         };
 
-        console.log('Booking Data:', bookingData);
-        console.log('Selected Ride:', this.selectedRide);
+        AppLogger.debug('Booking data:', bookingData);
+        AppLogger.debug('Selected ride:', this.selectedRide);
 
         this.bookingService.bookRide(bookingData).subscribe({
 
             next: (res: any) => {
-                console.log(res);
+                AppLogger.debug('Booking response:', res);
 
                 this.successMessage = res.message;
 
@@ -96,7 +97,7 @@ export class RideDetailsCard {
             },
 
             error: (err: any) => {
-                console.log(err);
+                AppLogger.error('Booking failed:', err);
                 this.errorMessage = err.error.message;
                 this.cdr.detectChanges();
 

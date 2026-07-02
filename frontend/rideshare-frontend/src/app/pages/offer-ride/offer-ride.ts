@@ -6,6 +6,7 @@ import { Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { Message } from '../../components/message/message';
 import { inject } from '@angular/core';
+import { AppLogger } from '../../services/app-logger';
 
 @Component({
     selector: 'app-offer-ride',
@@ -110,7 +111,7 @@ export class OfferRide {
                     const errorDetails = err.error?.errors ? JSON.stringify(err.error.errors) : '';
                     this.errorMessage = err.error?.message || 'Update failed';
                     if (errorDetails) {
-                        console.error('Validation errors:', err.error.errors);
+                        AppLogger.error('Validation errors:', err.error.errors);
                         this.errorMessage += ' - ' + errorDetails;
                     }
                     this.cdr.detectChanges();
@@ -141,7 +142,7 @@ export class OfferRide {
                     const errorDetails = err.error?.errors ? JSON.stringify(err.error.errors) : '';
                     this.errorMessage = err.error?.message || 'Failed to offer ride';
                     if (errorDetails) {
-                        console.error('Validation errors:', err.error.errors);
+                        AppLogger.error('Validation errors:', err.error.errors);
                         this.errorMessage += ' - ' + errorDetails;
                     }
                     this.cdr.detectChanges();

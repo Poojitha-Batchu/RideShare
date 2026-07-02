@@ -5,6 +5,7 @@ import { Navbar } from '../../components/navbar/navbar';
 import { Rides } from '../../services/rides';
 import { Message } from '../../components/message/message';
 import { RideDetailsCard } from '../../components/ride-details-card/ride-details-card';
+import { AppLogger } from '../../services/app-logger';
 
 @Component({
     selector: 'app-find-rides',
@@ -64,7 +65,7 @@ export class FindRides implements OnInit {
                 }
             },
             error: (err: any) => {
-                console.log('Error loading rides:', err);
+                AppLogger.error('Error loading rides:', err);
             }
         });
     }
@@ -177,7 +178,7 @@ export class FindRides implements OnInit {
 
         this.rideService.searchRides(this.searchRideForm.value).subscribe({
             next: (res: any) => {
-                console.log(res);
+                AppLogger.debug('Search rides response:', res);
 
                 if (res.data && res.data.length > 0) {
                     this.rides = res.data;
@@ -200,7 +201,7 @@ export class FindRides implements OnInit {
             },
             error: (err: any) => {
                 // this.ngZone.run(() => {
-                console.log(err);
+                AppLogger.error('Search rides failed:', err);
                 this.rides = [];
                 this.errorMessage = err.error?.message || 'Error searching rides';
 

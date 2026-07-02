@@ -4,6 +4,7 @@ import { ReactiveFormsModule, FormBuilder, FormGroup, Validators, AbstractContro
 import { Router, RouterModule } from '@angular/router';
 import { Authentication } from '../../services/authentication';
 import { Message } from '../../components/message/message';
+import { AppLogger } from '../../services/app-logger';
 
 @Component({
     selector: 'app-signup-page',
@@ -56,6 +57,8 @@ export class SignupPage {
             this.authService.signup(this.signupForm.value).subscribe({
                 next: (res: any) => {
                     // console.log("Signup successful", res);
+                    AppLogger.debug("Signup successful", res);
+
                     this.signupSuccessMessage = res.message;
                     this.cdr.detectChanges();
                     this.signupForm.reset();
@@ -70,6 +73,7 @@ export class SignupPage {
                     this.signupErrorMessage = err.error.message;
                     this.cdr.detectChanges();
                     // console.log("Error", err);
+                    AppLogger.error("Signup Error: ", err)
 
                     // Clear error message after 2 seconds
                     setTimeout(() => {

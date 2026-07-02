@@ -1,3 +1,4 @@
+import logging
 from urllib import request
 
 from rest_framework.decorators import api_view
@@ -13,6 +14,8 @@ from rest_framework.permissions import IsAuthenticated
 from django.contrib.auth.hashers import make_password
 
 from django.db.models import Avg, Sum
+
+logger = logging.getLogger('frontend_logs')
 from bookings.models import Booking
 from ride_review.models import RideReview
 from rides.models import Ride
@@ -193,6 +196,29 @@ def update_profile(request):
             },
             status=500,
         )
+
+
+@api_view(["POST"])
+@permission_classes([AllowAny])
+def frontend_logs(request):
+    try:
+        payload = request.data or {}
+        level = payload.get('level', 'error')
+        message = payload.get('message', 'Frontend log')
+        details = payload.get('details', {})
+
+        log_method = getattr(logger, level, logger.error)
+        log_method(
+            "Frontend log: %s | Details: %s | URL: %s",
+            message,
+            details,
+            payload.get('url', ''),
+        )
+
+        return Response({"success": True, "message": "Log received"}, status=200)
+    except Exception as exc:
+        logger.exception("Failed to store frontend log: %s", exc)
+        return Response({"success": False, "message": "Failed to store log"}, status=500)
 
 
 @api_view(["POST"])

@@ -195,5 +195,33 @@ SIMPLE_JWT = {
 AUTH_USER_MODEL = 'accounts.User'
 
 # Email configuration for signup success functionality
-EMAIL_HOST_USER = "20bd5a0401@gmail.com"
-EMAIL_HOST_PASSWORD = "ukkacvqjzcwnkafc"  # Replace with your actual email password or use environment variables for security
+EMAIL_HOST_USER = "xxxx@gmail.com"
+EMAIL_HOST_PASSWORD = "xxxxx"  # Replace with your actual email password or use environment variables for security
+
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+    'formatters': {
+        'verbose': {
+            'format': '%(asctime)s %(levelname)s %(name)s %(message)s'
+        },
+    },
+    'handlers': {
+        'console': {
+            'class': 'logging.StreamHandler',
+            'formatter': 'verbose',
+        },
+    },
+    'loggers': {
+        'frontend_logs': {
+            'handlers': ['console'],
+            'level': 'INFO',
+            'propagate': False,
+        },
+        'django': {
+            'handlers': ['console'],
+            'level': 'INFO',
+            'propagate': True,
+        },
+    },
+}

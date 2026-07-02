@@ -6,6 +6,7 @@ import { Router } from '@angular/router';
 import { Rides } from '../../services/rides';
 import { RideChat } from '../ride-chat/ride-chat';
 import { NoRides } from '../no-rides/no-rides';
+import { AppLogger } from '../../services/app-logger';
 
 @Component({
     selector: 'app-my-offered-rides',
@@ -70,7 +71,7 @@ export class MyOfferedRides implements OnInit {
     loadMyRides() {
         this.bookingService.getMyOfferedRides().subscribe({
             next: (res: any) => {
-                console.log('Offered rides response:', res);
+                AppLogger.debug('Offered rides response:', res);
                 this.rides = res.data;
 
                 this.groupRidesByDate();
@@ -79,7 +80,7 @@ export class MyOfferedRides implements OnInit {
             },
 
             error: (err: any) => {
-                console.error('Error loading offered rides:', err);
+                AppLogger.error('Error loading offered rides:', err);
                 this.cdr.detectChanges();
             }
         });
@@ -224,7 +225,7 @@ export class MyOfferedRides implements OnInit {
             },
 
             error: (err: any) => {
-                console.error(err);
+                AppLogger.error('Failed to start ride:', err);
                 this.startRideErrorMessage = err.error.message;
                 this.cdr.detectChanges();
 
@@ -279,7 +280,7 @@ export class MyOfferedRides implements OnInit {
             },
 
             error: (err: any) => {
-                console.error(err);
+                AppLogger.error('Failed to complete ride:', err);
                 this.completeRideErrorMessage = err.error.message;
                 this.cdr.detectChanges();
 

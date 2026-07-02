@@ -6,6 +6,7 @@ import { Message } from '../message/message';
 import { RideChat } from '../ride-chat/ride-chat';
 import { NoRides } from '../no-rides/no-rides';
 import { Reviews } from '../../services/reviews';
+import { AppLogger } from '../../services/app-logger';
 
 @Component({
     selector: 'app-my-bookings',
@@ -85,7 +86,7 @@ export class MyBookings implements OnInit {
     loadBookings() {
         this.bookingService.getMyBookings().subscribe({
             next: (res: any) => {
-                console.log('My bookings response:', res);
+                AppLogger.debug('My bookings response:', res);
                 this.bookings = res.data || [];
 
                 this.bookings.sort((a, b) => {
@@ -99,7 +100,7 @@ export class MyBookings implements OnInit {
             },
 
             error: (err: any) => {
-                console.log(err);
+                AppLogger.error('Failed to load bookings:', err);
             },
         });
     }
@@ -136,7 +137,7 @@ export class MyBookings implements OnInit {
 
         this.bookingService.cancelBooking(cancelData).subscribe({
             next: (res: any) => {
-                // console.log(res);
+                AppLogger.debug('My booking cancellation response:', res);
                 this.cancellationSuccessMessage = res.message;
 
                 // UPDATE UI
@@ -172,7 +173,7 @@ export class MyBookings implements OnInit {
             },
 
             error: (err: any) => {
-                // console.log(err);
+                AppLogger.error('My booking cancellation error:', err);
 
                 this.cancellationErrorMessage = err?.error?.message || 'Cancellation failed';
                 this.cdr.detectChanges();
@@ -220,7 +221,7 @@ export class MyBookings implements OnInit {
             },
 
             error: (err) => {
-                console.error(err);
+                AppLogger.error('Failed to load review status:', err);
                 this.cdr.detectChanges();
             }
         });

@@ -5,6 +5,7 @@ import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { Navbar } from '../../components/navbar/navbar';
 import { Message } from '../../components/message/message';
+import { AppLogger } from '../../services/app-logger';
 
 @Component({
     selector: 'app-profile-page',
@@ -78,7 +79,7 @@ export class ProfilePage implements OnInit {
     getProfile() {
         return this.authService.get_profile_details().subscribe({
             next: (response: any) => {
-                console.log('Profile response:', response);
+                AppLogger.debug('Profile response:', response);
                 this.userData = response;
 
                 // Construct full image URL if image exists
