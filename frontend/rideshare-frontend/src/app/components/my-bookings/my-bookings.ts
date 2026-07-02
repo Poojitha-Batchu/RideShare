@@ -354,4 +354,12 @@ export class MyBookings implements OnInit {
             }
         });
     }
+
+    getDriverImageUrl(booking: any): string | null {
+        const imageUrl = booking.driver_image;
+        if (!imageUrl) {
+            return null;
+        }
+        return imageUrl;
+    }
 }

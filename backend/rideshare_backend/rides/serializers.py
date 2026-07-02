@@ -35,17 +35,16 @@ class RideSerializer(serializers.ModelSerializer):
     def get_user_profile_image(self, obj):
         request = self.context.get("request")
 
-        if obj.user.profile_image:
-
-            # If request exists
+        profile_image_url = obj.user.profile_image
+        if profile_image_url:
+            # If it's a full URL from cloud storage, use it directly
+            if profile_image_url.startswith('http://') or profile_image_url.startswith('https://'):
+                return profile_image_url
+            # If it's a local path and we have a request, build the absolute URI
             if request:
-                return request.build_absolute_uri(
-                    obj.user.profile_image.url
-                )
-
-            # Fallback
-            return obj.user.profile_image.url
-
+                return request.build_absolute_uri(profile_image_url)
+            # Fallback for local path without request context
+            return profile_image_url
         return None
     
     def get_average_rating(self, obj):

@@ -201,8 +201,8 @@ def my_bookings(request):
                     "booking_id": booking.id,
                     "driver_name": ride.user.full_name,
                     "driver_image": (
-                        request.build_absolute_uri(ride.user.profile_image.url)
-                        if ride.user.profile_image
+                        request.build_absolute_uri(ride.user.profile_image)
+                        if ride.user.profile_image and ride.user.profile_image.startswith('/media/')
                         else None
                     ),
                     "driver_rating": ride_data["average_rating"],
