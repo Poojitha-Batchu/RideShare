@@ -3,6 +3,8 @@ from .models import User
 from django.contrib.auth.hashers import make_password
 
 class UserSerializer(serializers.ModelSerializer):
+    profile_image = serializers.CharField(required=False, allow_blank=True, allow_null=True)
+    
     class Meta:
         model = User
         fields = ['id', 'full_name', 'email', 'phone', 'gender', 'password', 'date_of_birth', 'profile_image', 'created_at', 'updated_at']

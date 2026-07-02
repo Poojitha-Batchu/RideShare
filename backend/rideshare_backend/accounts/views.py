@@ -185,28 +185,38 @@ def update_profile(request):
         user = request.user
         uploaded_file = request.FILES.get('profile_image')
         
-        # Prepare serializer data from request
+        # Prepare serializer data - exclude profile_image if file is uploaded
         serializer_data = request.data.copy() if hasattr(request.data, 'copy') else dict(request.data)
         
         if uploaded_file:
+            # Handle file upload separately
             try:
                 file_url = upload_profile_image_to_storage(user, uploaded_file)
                 if file_url:
-                    serializer_data['profile_image'] = file_url
+                    user.profile_image = file_url
+                    user.save(update_fields=['profile_image'])
+                    # Don't include profile_image in serializer_data to avoid re-validation
+                    if 'profile_image' in serializer_data:
+                        del serializer_data['profile_image']
             except Exception as upload_err:
                 logger.error(f"Image upload error: {upload_err}")
-                serializer_data['profile_image'] = None
+        else:
+            # Remove profile_image from serializer_data if no file was uploaded
+            if 'profile_image' in serializer_data:
+                del serializer_data['profile_image']
 
         serializer = UserSerializer(user, data=serializer_data, partial=True)
 
         if serializer.is_valid():
             serializer.save()
 
+            # Get updated user data
+            updated_serializer = UserSerializer(user)
             return Response(
                 {
                     "success": True,
                     "message": "Profile updated successfully",
-                    "data": serializer.data,
+                    "data": updated_serializer.data,
                 },
                 status=200,
             )
