@@ -10,7 +10,7 @@ RUN npm ci
 COPY . ./
 
 # 2. Create the runtime script file BEFORE building so Angular bundles it right
-RUN mkdir -p src/assets && echo "window.__API_BASE_URL__ = '${API_BASE_URL}';" > src/assets/runtime-env.js
+RUN mkdir -p public && printf "window.__API_BASE_URL__ = '%s';\n" "${API_BASE_URL}" > public/runtime-env.js
 
 RUN npm run build
 

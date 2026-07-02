@@ -113,4 +113,5 @@ jobs:
             --region ${{ secrets.GCP_REGION }} \
             --platform managed \
             --allow-unauthenticated \
-            --service-account=github-actions-runner@${{ secrets.GCP_PROJECT_ID }}.iam.gserviceaccount.com
+            --service-account=github-actions-runner@${{ secrets.GCP_PROJECT_ID }}.iam.gserviceaccount.com \
+            --set-env-vars "API_BASE_URL=${{ needs.build-backend-and-deploy.outputs.backend_url }}"

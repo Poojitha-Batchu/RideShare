@@ -1,8 +1,8 @@
 #!/bin/sh
 set -e
 
-: "${API_BASE_URL:=http://localhost:8000}"
-: "${PORT:=8080}"
+API_BASE_URL="${API_BASE_URL:-http://localhost:8000}"
+PORT="${PORT:-8080}"
 
 cat > /usr/share/nginx/html/runtime-env.js <<EOF
 window.__API_BASE_URL__ = "${API_BASE_URL}";
