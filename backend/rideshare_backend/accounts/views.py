@@ -185,25 +185,25 @@ def update_profile(request):
         user = request.user
         uploaded_file = request.FILES.get('profile_image')
         
-        # Prepare serializer data - exclude profile_image if file is uploaded
-        serializer_data = request.data.copy() if hasattr(request.data, 'copy') else dict(request.data)
-        
         if uploaded_file:
-            # Handle file upload separately
             try:
                 file_url = upload_profile_image_to_storage(user, uploaded_file)
                 if file_url:
                     user.profile_image = file_url
                     user.save(update_fields=['profile_image'])
-                    # Don't include profile_image in serializer_data to avoid re-validation
-                    if 'profile_image' in serializer_data:
-                        del serializer_data['profile_image']
             except Exception as upload_err:
                 logger.error(f"Image upload error: {upload_err}")
-        else:
-            # Remove profile_image from serializer_data if no file was uploaded
-            if 'profile_image' in serializer_data:
-                del serializer_data['profile_image']
+
+        # Build clean serializer data with only text fields
+        serializer_data = {
+            'full_name': request.data.get('full_name') or '',
+            'phone': request.data.get('phone') or '',
+            'gender': request.data.get('gender') or '',
+            'date_of_birth': request.data.get('date_of_birth') or '',
+        }
+        
+        # Remove empty values to let defaults handle them
+        serializer_data = {k: v for k, v in serializer_data.items() if v}
 
         serializer = UserSerializer(user, data=serializer_data, partial=True)
 
